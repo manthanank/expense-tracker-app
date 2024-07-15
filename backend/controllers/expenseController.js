@@ -4,7 +4,6 @@ exports.addExpense = async (req, res) => {
     const { description, amount, category } = req.body;
     try {
         const date = new Date();
-        console.log(date);
         const expense = new Expense({
             user: req.user.id,
             description,

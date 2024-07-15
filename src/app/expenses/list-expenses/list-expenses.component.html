@@ -1,0 +1,38 @@
+<div class="container mx-auto mt-10 h-screen">
+    <h2 class="text-2xl mb-4">Expense List</h2>
+    <div class="mb-4">
+        <label for="filter" class="block text-sm font-bold mb-2">Filter By</label>
+        <select id="filter" class="w-full px-3 py-2 border rounded" (change)="onFilterChange($event)">
+            <option value="">Select Filter</option>
+            <option value="week">Past Week</option>
+            <option value="month">Last Month</option>
+            <option value="3months">Last 3 Months</option>
+            <option value="custom">Custom</option>
+        </select>
+    </div>
+    @if (filter === 'custom') {
+    <div class="mb-4">
+        <label for="startDate" class="block text-sm font-bold mb-2">Start Date</label>
+        <input id="startDate" type="date" class="w-full px-3 py-2 border rounded" [(ngModel)]="startDate">
+        <label for="endDate" class="block text-sm font-bold mb-2 mt-2">End Date</label>
+        <input id="endDate" type="date" class="w-full px-3 py-2 border rounded" [(ngModel)]="endDate">
+        <button class="bg-blue-500 text-white py-2 px-4 rounded mt-2" (click)="applyCustomFilter()">Apply</button>
+    </div>
+    }
+    <ul>
+        @for (expense of expenses; track $index) {
+        <li class="border-b py-2">
+            <div class="flex justify-between">
+                <span>{{ expense.description }} - {{ expense.amount }} ({{ expense.category }})</span>
+                <span>{{ expense.date | date }}</span>
+            </div>
+            <div class="flex justify-end">
+                <button class="bg-yellow-500 text-white py-1 px-2 rounded mr-2"
+                    (click)="editExpense(expense)">Edit</button>
+                <button class="bg-red-500 text-white py-1 px-2 rounded"
+                    (click)="deleteExpense(expense._id)">Delete</button>
+            </div>
+        </li>
+        }
+    </ul>
+</div>
