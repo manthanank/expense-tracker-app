@@ -29,7 +29,7 @@ exports.login = async (req, res) => {
         if (!isMatch) {
             return res.status(400).json({ message: 'Invalid credentials' });
         }
-        const token = jwt.sign({ id: user._id }, 'your-secret-key', { expiresIn: '1h' });
+        const token = jwt.sign({ id: user._id }, process.env.TOKEN_SECRET, { expiresIn: '1h' });
         res.json({ token: token, user: { id: user._id, email: user.email }});
     } catch (err) {
         res.status(500).json({ message: 'Server error' });
@@ -43,7 +43,7 @@ exports.forgotPassword = async (req, res) => {
         if (!user) {
             return res.status(400).json({ message: 'User not found' });
         }
-        const token = jwt.sign({ id: user._id }, 'your-secret-key', { expiresIn: '1h' });
+        const token = jwt.sign({ id: user._id }, process.env.TOKEN_SECRET, { expiresIn: '1h' });
         user.resetPasswordToken = token;
         user.resetPasswordExpires = Date.now() + 3600000; // 1 hour
         await user.save();
