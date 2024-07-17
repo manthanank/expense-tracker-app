@@ -10,9 +10,6 @@
             @if (!isLoggedIn()) {
             <a routerLink="/login" class="text-white mr-4">Login</a>
             }
-            @if (!isLoggedIn()) {
-            <a routerLink="/signup" class="text-white mr-4">Sign Up</a>
-            }
             @if (isLoggedIn()) {
             <button (click)="logout()" class="text-white">Logout</button>
             }
