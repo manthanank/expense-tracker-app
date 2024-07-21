@@ -19,7 +19,13 @@
         <button class="bg-blue-500 text-white py-2 px-4 rounded mt-2" (click)="applyCustomFilter()">Apply</button>
     </div>
     }
-    @if (expenses.length > 0) {
+    @if (isLoading){
+    <p class="text-center text-gray-500">Loading...</p>
+    }
+    @else if(errorMsg) {
+    <p class="text-center text-red-500">{{ errorMsg }}</p>
+    }
+    @else if(expenses.length > 0 && !isLoading && !errorMsg) {
     <ul>
         @for (expense of expenses; track $index) {
         <li class="border-b py-2">

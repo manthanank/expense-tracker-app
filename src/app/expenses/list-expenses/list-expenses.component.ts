@@ -17,8 +17,10 @@ export class ListExpensesComponent {
   startDate: string = '';
   endDate: string = '';
   error: string = '';
+  errorMsg: string = '';
   showConfirmDialog = false;
   selectedExpenseId = '';
+  isLoading = false;
 
   expenseService = inject(ExpenseService);
   router = inject(Router);
@@ -30,13 +32,16 @@ export class ListExpensesComponent {
   }
 
   getExpenses(params: any = {}) {
+    this.isLoading = true;
     this.expenseService.getExpenses(params).subscribe({
       next: (res) => {
         this.expenses = res;
+        this.isLoading = false;
       },
       error: (err) => {
         console.error(err);
-        this.error = err?.error?.message || 'An error occurred';
+        this.isLoading = false;
+        this.errorMsg = err?.error?.message || 'An error occurred';
       },
     });
   }
