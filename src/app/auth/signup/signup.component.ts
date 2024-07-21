@@ -1,37 +1,62 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
 import { AuthService } from '../../core/services/auth.service';
-import { FormsModule } from '@angular/forms';
-
+import {
+  FormControl,
+  FormGroup,
+  ReactiveFormsModule,
+  Validators,
+} from '@angular/forms';
+import { NgClass } from '@angular/common';
 @Component({
   selector: 'app-signup',
   standalone: true,
-  imports: [FormsModule, RouterLink],
+  imports: [ReactiveFormsModule, RouterLink, NgClass],
   templateUrl: './signup.component.html',
   styleUrl: './signup.component.scss',
 })
-export class SignupComponent {
-  email: string = '';
-  password: string = '';
+export class SignupComponent implements OnInit {
+  signupForm: FormGroup = new FormGroup({});
   error: string = '';
+  showPassword: boolean = false;
 
   authService = inject(AuthService);
   router = inject(Router);
 
-  constructor() {}
+  constructor() {
+    this.signupForm = new FormGroup({
+      email: new FormControl('', [Validators.required, Validators.email]),
+      password: new FormControl('', [
+        Validators.required,
+        Validators.minLength(6),
+        Validators.maxLength(20),
+      ]),
+    });
+  }
+
+  ngOnInit(): void {}
+
+  togglePasswordVisibility(): void {
+    this.showPassword = !this.showPassword;
+  }
 
   onSubmit() {
-    this.authService
-      .signup({ email: this.email, password: this.password })
-      .subscribe({
-        next: (res) => {
-          localStorage.setItem('token', res.token);
-          this.router.navigate(['/']);
-        },
-        error: (err) => {
-          console.error(err);
-          this.error = err?.error?.message || 'An error occurred';
-        },
-      });
+    if (this.signupForm.valid) {
+      this.authService
+        .signup({
+          email: this.signupForm.value.email,
+          password: this.signupForm.value.password,
+        })
+        .subscribe({
+          next: (res) => {
+            localStorage.setItem('token', res.token);
+            this.router.navigate(['/']);
+          },
+          error: (err) => {
+            console.error(err);
+            this.error = err?.error?.message || 'An error occurred';
+          },
+        });
+    }
   }
 }
