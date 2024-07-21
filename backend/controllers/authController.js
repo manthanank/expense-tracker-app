@@ -6,6 +6,12 @@ const sendEmail = require('../services/emailService');
 exports.signup = async (req, res) => {
     const { email, password } = req.body;
     try {
+        // Check if user already exists
+        const existingUser = await User.findOne({ email });
+        if (existingUser) {
+            return res.status(409).json({ message: 'User already exists' }); // 409 Conflict
+        }
+
         const hashedPassword = await bcrypt.hash(password, 10); // Ensure bcrypt is working correctly
         const user = new User({ email, password: hashedPassword });
         await user.save();

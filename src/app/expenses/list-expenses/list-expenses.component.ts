@@ -17,6 +17,8 @@ export class ListExpensesComponent {
   startDate: string = '';
   endDate: string = '';
   error: string = '';
+  showConfirmDialog = false;
+  selectedExpenseId = '';
 
   expenseService = inject(ExpenseService);
   router = inject(Router);
@@ -50,10 +52,13 @@ export class ListExpensesComponent {
     const params: any = {};
     if (this.filter === 'week') {
       params.startDate = this.getPastDate(7);
+      params.endDate = new Date().toISOString().split('T')[0];
     } else if (this.filter === 'month') {
       params.startDate = this.getPastDate(30);
+      params.endDate = new Date().toISOString().split('T')[0];
     } else if (this.filter === '3months') {
       params.startDate = this.getPastDate(90);
+      params.endDate = new Date().toISOString().split('T')[0];
     }
     this.getExpenses(params);
   }
@@ -75,10 +80,16 @@ export class ListExpensesComponent {
     this.router.navigate(['/edit-expense', expense._id]);
   }
 
+  showDeleteConfirm(expenseId: string) {
+    this.selectedExpenseId = expenseId;
+    this.showConfirmDialog = true;
+  }
+
   deleteExpense(id: string) {
     this.expenseService.deleteExpense(id).subscribe({
       next: (res) => {
         this.getExpenses();
+        this.showConfirmDialog = false;
       },
       error: (err) => {
         console.error(err);

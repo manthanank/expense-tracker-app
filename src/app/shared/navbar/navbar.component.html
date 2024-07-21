@@ -1,17 +1,17 @@
 <nav class="bg-gray-800 p-4">
     <div class="container mx-auto flex justify-between items-center">
         <div class="text-white text-lg">
-            <a routerLink="/">Expense Tracker</a>
+            <a routerLink="/" class="text-white no-underline mr-4 hover:underline">Expense Tracker</a>
         </div>
         <div>
             @if (isLoggedIn()) {
-                <a routerLink="/add-expense" class="text-white mr-4">Add Expense</a>
+                <a routerLink="/add-expense" class="text-white no-underline mr-4 hover:underline">Add Expense</a>
             }
             @if (!isLoggedIn()) {
-            <a routerLink="/login" class="text-white mr-4">Login</a>
+            <a routerLink="/login" class="text-white no-underline mr-4 hover:underline">Login</a>
             }
             @if (isLoggedIn()) {
-            <button (click)="logout()" class="text-white">Logout</button>
+            <button (click)="logout()" class="text-white bg-transparent border-none cursor-pointer hover:underline">Logout</button>
             }
         </div>
     </div>

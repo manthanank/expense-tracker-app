@@ -24,4 +24,8 @@ export const routes: Routes = [
     component: EditExpenseComponent,
     canActivate: [AuthGuard],
   },
+  {
+    path: '**',
+    redirectTo: '',
+  }
 ];

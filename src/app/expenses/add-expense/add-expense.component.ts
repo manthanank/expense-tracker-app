@@ -31,6 +31,10 @@ export class AddExpenseComponent {
 
   constructor() {}
 
+  ngOnInit() {
+    this.date = new Date().toISOString().split('T')[0];
+  }
+
   onSubmit() {
     const expense = {
       description: this.description,
