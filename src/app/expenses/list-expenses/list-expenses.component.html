@@ -3,7 +3,8 @@
     <form [formGroup]="filterForm">
         <div class="mb-4">
             <label for="filter" class="block text-sm font-bold mb-2">Filter By</label>
-            <select id="filter" class="w-full px-3 py-2 border rounded" formControlName="filter" (change)="onFilterChange()">
+            <select id="filter" class="w-full px-3 py-2 border rounded" formControlName="filter"
+                (change)="onFilterChange()">
                 <option value="">Select Filter</option>
                 <option value="week">Past Week</option>
                 <option value="month">Last Month</option>
@@ -14,9 +15,19 @@
         @if (filter === 'custom') {
         <div class="mb-4">
             <label for="startDate" class="block text-sm font-bold mb-2">Start Date</label>
-            <input id="startDate" type="date" class="w-full px-3 py-2 border rounded" formControlName="startDate">
+            <input id="startDate" type="date" class="w-full px-3 py-2 border rounded" formControlName="startDate"
+                (change)="onStartDateChange()">
+            @if (filter === 'custom' && (filterForm.controls['startDate'].errors?.['required'] &&
+            filterForm.controls['startDate'].touched || submitted)) {
+            <div class="text-red-500 text-sm">Start Date is required</div>
+            }
             <label for="endDate" class="block text-sm font-bold mb-2 mt-2">End Date</label>
-            <input id="endDate" type="date" class="w-full px-3 py-2 border rounded" formControlName="endDate">
+            <input id="endDate" type="date" class="w-full px-3 py-2 border rounded" formControlName="endDate"
+                [min]="minDate">
+            @if (filter === 'custom' && (filterForm.controls['endDate'].errors?.['required'] &&
+            filterForm.controls['endDate'].touched || submitted)) {
+            <div class="text-red-500 text-sm">End Date is required</div>
+            }
             <button class="bg-blue-500 text-white py-2 px-4 rounded mt-2" (click)="applyCustomFilter()">Apply</button>
         </div>
         }

@@ -1,7 +1,12 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { ExpenseService } from '../../core/services/expense.service';
-import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
+import {
+  FormControl,
+  FormGroup,
+  ReactiveFormsModule,
+  Validators,
+} from '@angular/forms';
 import { DatePipe } from '@angular/common';
 import { Expense } from '../../core/models/expense.model';
 
@@ -23,6 +28,8 @@ export class ListExpensesComponent implements OnInit {
   showConfirmDialog = false;
   selectedExpenseId = '';
   isLoading = false;
+  minDate: string = '';
+  submitted: boolean = false;
 
   expenseService = inject(ExpenseService);
   router = inject(Router);
@@ -32,8 +39,8 @@ export class ListExpensesComponent implements OnInit {
   ngOnInit() {
     this.filterForm = new FormGroup({
       filter: new FormControl(''),
-      startDate: new FormControl(''),
-      endDate: new FormControl(''),
+      startDate: new FormControl('', [Validators.required]),
+      endDate: new FormControl('', [Validators.required]),
     });
     this.getExpenses();
   }
@@ -59,6 +66,9 @@ export class ListExpensesComponent implements OnInit {
     if (this.filter !== 'custom') {
       this.applyFilter();
     }
+    this.filterForm.get('startDate')?.reset();
+    this.filterForm.get('endDate')?.reset();
+    this.submitted = false;
   }
 
   applyFilter() {
@@ -79,10 +89,17 @@ export class ListExpensesComponent implements OnInit {
   }
 
   applyCustomFilter() {
+    this.submitted = true;
     const startDate = this.filterForm.get('startDate')?.value;
     const endDate = this.filterForm.get('endDate')?.value;
     const params: any = { startDate, endDate };
-    this.getExpenses(params);
+    if (startDate && endDate) {
+      this.getExpenses(params);
+    }
+  }
+
+  onStartDateChange() {
+    this.minDate = this.filterForm.get('startDate')?.value;
   }
 
   getPastDate(days: number): string {
