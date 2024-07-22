@@ -1,20 +1,22 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
-import { FormsModule } from '@angular/forms';
+import {
+  FormControl,
+  FormGroup,
+  ReactiveFormsModule,
+  Validators,
+} from '@angular/forms';
 import { ExpenseService } from '../../core/services/expense.service';
 
 @Component({
   selector: 'app-add-expense',
   standalone: true,
-  imports: [FormsModule, RouterLink],
+  imports: [ReactiveFormsModule, RouterLink],
   templateUrl: './add-expense.component.html',
   styleUrl: './add-expense.component.scss',
 })
-export class AddExpenseComponent {
-  description: string = '';
-  amount: number = 0;
-  category: string = '';
-  date: string = '';
+export class AddExpenseComponent implements OnInit {
+  expenseForm: FormGroup = new FormGroup({});
   categories: string[] = [
     'Groceries',
     'Leisure',
@@ -32,15 +34,42 @@ export class AddExpenseComponent {
   constructor() {}
 
   ngOnInit() {
-    this.date = new Date().toISOString().split('T')[0];
+    this.expenseForm = new FormGroup({
+      description: new FormControl('', [
+        Validators.required,
+        Validators.minLength(3),
+      ]),
+      amount: new FormControl('', [Validators.required, Validators.min(0)]),
+      category: new FormControl('', Validators.required),
+      date: new FormControl(
+        new Date().toISOString().split('T')[0],
+        Validators.required
+      ),
+    });
+  }
+
+  get description() {
+    return this.expenseForm.get('description');
+  }
+
+  get amount() {
+    return this.expenseForm.get('amount');
+  }
+
+  get category() {
+    return this.expenseForm.get('category');
+  }
+
+  get date() {
+    return this.expenseForm.get('date');
   }
 
   onSubmit() {
     const expense = {
-      description: this.description,
-      amount: this.amount,
-      category: this.category,
-      date: new Date(this.date),
+      description: this.expenseForm.value.description,
+      amount: this.expenseForm.value.amount,
+      category: this.expenseForm.value.category,
+      date: new Date(this.expenseForm.value.date).toISOString(),
     };
     this.expenseService.addExpense(expense).subscribe({
       next: (res) => {

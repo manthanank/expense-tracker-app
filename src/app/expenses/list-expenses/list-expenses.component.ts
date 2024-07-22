@@ -1,8 +1,9 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { ExpenseService } from '../../core/services/expense.service';
 import { FormsModule } from '@angular/forms';
 import { DatePipe } from '@angular/common';
+import { Expense } from '../../core/models/expense.model';
 
 @Component({
   selector: 'app-list-expenses',
@@ -11,8 +12,8 @@ import { DatePipe } from '@angular/common';
   templateUrl: './list-expenses.component.html',
   styleUrl: './list-expenses.component.scss',
 })
-export class ListExpensesComponent {
-  expenses: any[] = [];
+export class ListExpensesComponent implements OnInit {
+  expenses: Expense[] = [];
   filter: string = '';
   startDate: string = '';
   endDate: string = '';

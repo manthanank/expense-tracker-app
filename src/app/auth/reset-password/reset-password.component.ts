@@ -1,18 +1,22 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { AuthService } from '../../core/services/auth.service';
-import { FormsModule } from '@angular/forms';
+import {
+  FormControl,
+  FormGroup,
+  ReactiveFormsModule,
+  Validators,
+} from '@angular/forms';
 
 @Component({
   selector: 'app-reset-password',
   standalone: true,
-  imports: [FormsModule, RouterLink],
+  imports: [ReactiveFormsModule, RouterLink],
   templateUrl: './reset-password.component.html',
   styleUrl: './reset-password.component.scss',
 })
-export class ResetPasswordComponent {
-  password: string = '';
-  confirmPassword: string = '';
+export class ResetPasswordComponent implements OnInit {
+  resetPasswordForm: FormGroup = new FormGroup({});
   token: string;
 
   authService = inject(AuthService);
@@ -23,20 +27,32 @@ export class ResetPasswordComponent {
     this.token = this.route.snapshot.paramMap.get('token')!;
   }
 
+  ngOnInit(): void {
+    this.resetPasswordForm = new FormGroup({
+      password: new FormControl('', [Validators.required]),
+      confirmPassword: new FormControl('', [Validators.required]),
+    });
+  }
+
   onSubmit() {
-    if (this.password !== this.confirmPassword) {
+    if (
+      this.resetPasswordForm.value.password !==
+      this.resetPasswordForm.value.confirmPassword
+    ) {
       console.error('Passwords do not match');
       return;
     }
 
-    this.authService.resetPassword(this.token, this.password).subscribe(
-      (res) => {
-        console.log(res);
-        this.router.navigate(['/login']);
-      },
-      (err) => {
-        console.error(err);
-      }
-    );
+    this.authService
+      .resetPassword(this.token, this.resetPasswordForm.value.password)
+      .subscribe({
+        next: (res) => {
+          console.log(res);
+          this.router.navigate(['/login']);
+        },
+        error: (err) => {
+          console.error(err);
+        },
+      });
   }
 }
