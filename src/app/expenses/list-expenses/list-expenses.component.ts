@@ -1,18 +1,19 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { ExpenseService } from '../../core/services/expense.service';
-import { FormsModule } from '@angular/forms';
+import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { DatePipe } from '@angular/common';
 import { Expense } from '../../core/models/expense.model';
 
 @Component({
   selector: 'app-list-expenses',
   standalone: true,
-  imports: [FormsModule, DatePipe],
+  imports: [ReactiveFormsModule, DatePipe],
   templateUrl: './list-expenses.component.html',
   styleUrl: './list-expenses.component.scss',
 })
 export class ListExpensesComponent implements OnInit {
+  filterForm: FormGroup = new FormGroup({});
   expenses: Expense[] = [];
   filter: string = '';
   startDate: string = '';
@@ -29,6 +30,11 @@ export class ListExpensesComponent implements OnInit {
   constructor() {}
 
   ngOnInit() {
+    this.filterForm = new FormGroup({
+      filter: new FormControl(''),
+      startDate: new FormControl(''),
+      endDate: new FormControl(''),
+    });
     this.getExpenses();
   }
 
@@ -47,8 +53,9 @@ export class ListExpensesComponent implements OnInit {
     });
   }
 
-  onFilterChange(event: any) {
-    this.filter = event.target.value;
+  onFilterChange() {
+    const filterValue = this.filterForm.get('filter')?.value;
+    this.filter = filterValue;
     if (this.filter !== 'custom') {
       this.applyFilter();
     }
@@ -56,13 +63,15 @@ export class ListExpensesComponent implements OnInit {
 
   applyFilter() {
     const params: any = {};
-    if (this.filter === 'week') {
+    const filterValue = this.filterForm.get('filter')?.value; // Use the form control value with optional chaining
+
+    if (filterValue === 'week') {
       params.startDate = this.getPastDate(7);
       params.endDate = new Date().toISOString().split('T')[0];
-    } else if (this.filter === 'month') {
+    } else if (filterValue === 'month') {
       params.startDate = this.getPastDate(30);
       params.endDate = new Date().toISOString().split('T')[0];
-    } else if (this.filter === '3months') {
+    } else if (filterValue === '3months') {
       params.startDate = this.getPastDate(90);
       params.endDate = new Date().toISOString().split('T')[0];
     }
@@ -70,10 +79,10 @@ export class ListExpensesComponent implements OnInit {
   }
 
   applyCustomFilter() {
-    if (this.startDate && this.endDate) {
-      const params = { startDate: this.startDate, endDate: this.endDate };
-      this.getExpenses(params);
-    }
+    const startDate = this.filterForm.get('startDate')?.value;
+    const endDate = this.filterForm.get('endDate')?.value;
+    const params: any = { startDate, endDate };
+    this.getExpenses(params);
   }
 
   getPastDate(days: number): string {

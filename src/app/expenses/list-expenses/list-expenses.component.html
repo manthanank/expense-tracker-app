@@ -1,24 +1,26 @@
 <div class="container mx-auto mt-10 p-4">
     <h2 class="text-2xl mb-4">Expense List</h2>
-    <div class="mb-4">
-        <label for="filter" class="block text-sm font-bold mb-2">Filter By</label>
-        <select id="filter" class="w-full px-3 py-2 border rounded" (change)="onFilterChange($event)">
-            <option value="">Select Filter</option>
-            <option value="week">Past Week</option>
-            <option value="month">Last Month</option>
-            <option value="3months">Last 3 Months</option>
-            <option value="custom">Custom</option>
-        </select>
-    </div>
-    @if (filter === 'custom') {
-    <div class="mb-4">
-        <label for="startDate" class="block text-sm font-bold mb-2">Start Date</label>
-        <input id="startDate" type="date" class="w-full px-3 py-2 border rounded" [(ngModel)]="startDate">
-        <label for="endDate" class="block text-sm font-bold mb-2 mt-2">End Date</label>
-        <input id="endDate" type="date" class="w-full px-3 py-2 border rounded" [(ngModel)]="endDate">
-        <button class="bg-blue-500 text-white py-2 px-4 rounded mt-2" (click)="applyCustomFilter()">Apply</button>
-    </div>
-    }
+    <form [formGroup]="filterForm">
+        <div class="mb-4">
+            <label for="filter" class="block text-sm font-bold mb-2">Filter By</label>
+            <select id="filter" class="w-full px-3 py-2 border rounded" formControlName="filter" (change)="onFilterChange()">
+                <option value="">Select Filter</option>
+                <option value="week">Past Week</option>
+                <option value="month">Last Month</option>
+                <option value="3months">Last 3 Months</option>
+                <option value="custom">Custom</option>
+            </select>
+        </div>
+        @if (filter === 'custom') {
+        <div class="mb-4">
+            <label for="startDate" class="block text-sm font-bold mb-2">Start Date</label>
+            <input id="startDate" type="date" class="w-full px-3 py-2 border rounded" formControlName="startDate">
+            <label for="endDate" class="block text-sm font-bold mb-2 mt-2">End Date</label>
+            <input id="endDate" type="date" class="w-full px-3 py-2 border rounded" formControlName="endDate">
+            <button class="bg-blue-500 text-white py-2 px-4 rounded mt-2" (click)="applyCustomFilter()">Apply</button>
+        </div>
+        }
+    </form>
     @if (isLoading){
     <p class="text-center text-gray-500">Loading...</p>
     }
