@@ -9,6 +9,7 @@ import {
 } from '@angular/forms';
 import { DatePipe } from '@angular/common';
 import { Expense } from '../../core/models/expense.model';
+import { Subject, takeUntil } from 'rxjs';
 
 @Component({
   selector: 'app-list-expenses',
@@ -30,6 +31,7 @@ export class ListExpensesComponent implements OnInit {
   isLoading = false;
   minDate: string = '';
   submitted: boolean = false;
+  private unsubscribe$: Subject<void> = new Subject<void>();
 
   expenseService = inject(ExpenseService);
   router = inject(Router);
@@ -47,7 +49,7 @@ export class ListExpensesComponent implements OnInit {
 
   getExpenses(params: any = {}) {
     this.isLoading = true;
-    this.expenseService.getExpenses(params).subscribe({
+    this.expenseService.getExpenses(params).pipe(takeUntil(this.unsubscribe$)).subscribe({
       next: (res) => {
         this.expenses = res;
         this.isLoading = false;
@@ -128,5 +130,10 @@ export class ListExpensesComponent implements OnInit {
         this.error = err?.error?.message || 'An error occurred';
       },
     });
+  }
+
+  ngOnDestroy() {
+    this.unsubscribe$.next();
+    this.unsubscribe$.complete();
   }
 }

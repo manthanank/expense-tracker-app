@@ -8,6 +8,7 @@ import {
   Validators,
 } from '@angular/forms';
 import { Expense } from '../../core/models/expense.model';
+import { Subject, takeUntil } from 'rxjs';
 
 @Component({
   selector: 'app-edit-expense',
@@ -32,7 +33,8 @@ export class EditExpenseComponent implements OnInit {
   route = inject(ActivatedRoute);
   expenseService = inject(ExpenseService);
   router = inject(Router);
-
+  private unsubscribe$: Subject<void> = new Subject<void>();
+  
   constructor() {}
 
   ngOnInit() {
@@ -70,7 +72,7 @@ export class EditExpenseComponent implements OnInit {
   }
 
   getExpense(id: string | null) {
-    this.expenseService.getExpenses({ id }).subscribe({
+    this.expenseService.getExpenses({ id }).pipe(takeUntil(this.unsubscribe$)).subscribe({
       next: (res) => {
         // console.log(res);
         this.expense = res[0];
@@ -111,5 +113,10 @@ export class EditExpenseComponent implements OnInit {
           this.error = err?.error?.message || 'An error occurred';
         },
       });
+  }
+
+  ngOnDestroy() {
+    this.unsubscribe$.next();
+    this.unsubscribe$.complete();
   }
 }
