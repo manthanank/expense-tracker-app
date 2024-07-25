@@ -9,7 +9,7 @@ export const ErrorInterceptor: HttpInterceptorFn = (req, next) => {
   const router = inject(Router); // Inject Router
   return next(req).pipe(
     catchError((error) => {
-      if (error.status === 401 || error.status === 403 || error.status === 404 || error) {
+      if (error.status === 401 || error.status === 403 || error.status === 404) {
         authService.logout();
         router.navigate(['/login']); // Redirect to login after logout
       }

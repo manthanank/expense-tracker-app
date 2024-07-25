@@ -15,8 +15,8 @@ exports.signup = async (req, res) => {
         const hashedPassword = await bcrypt.hash(password, 10); // Ensure bcrypt is working correctly
         const user = new User({ email, password: hashedPassword });
         await user.save();
-        const token = jwt.sign({ id: user._id }, 'your-secret-key', { expiresIn: '1h' });
-        res.json({ token: token, user: { id: user._id, email: user.email }});
+        const token = jwt.sign({ id: user._id }, process.env.TOKEN_SECRET, { expiresIn: '1h' });
+        res.json({ token: token, expiresIn: 3600, user: { id: user._id, email: user.email } });
     } catch (err) {
         console.error(err); // Log the error to see the details
         res.status(500).json({ message: 'Server error' });
@@ -36,7 +36,7 @@ exports.login = async (req, res) => {
             return res.status(400).json({ message: 'Invalid credentials' });
         }
         const token = jwt.sign({ id: user._id }, process.env.TOKEN_SECRET, { expiresIn: '1h' });
-        res.json({ token: token, user: { id: user._id, email: user.email }});
+        res.json({ token: token, expiresIn: 3600, user: { id: user._id, email: user.email } });
     } catch (err) {
         res.status(500).json({ message: 'Server error' });
     }
