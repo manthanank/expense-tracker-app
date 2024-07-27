@@ -1,4 +1,4 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, inject, OnInit, signal } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
 import { AuthService } from '../../core/services/auth.service';
 import {
@@ -17,8 +17,8 @@ import { NgClass } from '@angular/common';
 })
 export class SignupComponent implements OnInit {
   signupForm: FormGroup = new FormGroup({});
-  error: string = '';
-  showPassword: boolean = false;
+  error = signal<string>('');
+  showPassword = signal<boolean>(false);
 
   authService = inject(AuthService);
   router = inject(Router);
@@ -37,7 +37,7 @@ export class SignupComponent implements OnInit {
   ngOnInit(): void {}
 
   togglePasswordVisibility(): void {
-    this.showPassword = !this.showPassword;
+    this.showPassword.update((state) => !state);
   }
 
   onSubmit() {
@@ -54,7 +54,7 @@ export class SignupComponent implements OnInit {
           },
           error: (err) => {
             console.error(err);
-            this.error = err?.error?.message || 'An error occurred';
+            this.error.set(err?.error?.message || 'An error occurred');
           },
         });
     }
