@@ -7,11 +7,13 @@ import {
   Validators,
 } from '@angular/forms';
 import { ExpenseService } from '../../core/services/expense.service';
+import { BehaviorSubject } from 'rxjs';
+import { AsyncPipe } from '@angular/common';
 
 @Component({
   selector: 'app-add-expense',
   standalone: true,
-  imports: [ReactiveFormsModule, RouterLink],
+  imports: [ReactiveFormsModule, RouterLink, AsyncPipe],
   templateUrl: './add-expense.component.html',
   styleUrl: './add-expense.component.scss',
 })
@@ -26,7 +28,7 @@ export class AddExpenseComponent implements OnInit {
     'Health',
     'Others',
   ];
-  error: string = '';
+  error$ = new BehaviorSubject<string>('');
 
   expenseService = inject(ExpenseService);
   router = inject(Router);
@@ -64,7 +66,16 @@ export class AddExpenseComponent implements OnInit {
     return this.expenseForm.get('date');
   }
 
+  reset(){
+    this.expenseForm.get('description')?.reset();
+    this.expenseForm.get('amount')?.reset();
+    this.expenseForm.get('category')?.reset();
+  }
+
   onSubmit() {
+    if (this.expenseForm.invalid) {
+      return;
+    }
     const expense = {
       description: this.expenseForm.value.description,
       amount: this.expenseForm.value.amount,
@@ -77,7 +88,7 @@ export class AddExpenseComponent implements OnInit {
       },
       error: (err) => {
         console.error(err);
-        this.error = err?.error?.message || 'An error occurred';
+        this.error$.next(err?.error?.message || 'An error occurred');
       },
     });
   }

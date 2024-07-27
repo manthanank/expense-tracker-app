@@ -1,5 +1,8 @@
 <div class="flex justify-center items-center p-4">
     <form class="w-full max-w-sm" [formGroup]="expenseForm" (ngSubmit)="onSubmit()">
+        @if (error$ | async) {
+        <div class="text-red-500 text-center mb-4">{{ error$ | async }}</div>
+        }
         <h2 class="text-center text-2xl mb-4">Add Expense</h2>
         <div class="mb-4">
             <label for="description" class="block text-sm font-bold mb-2">Description</label>
@@ -44,6 +47,7 @@
         </div>
         <div class="flex items-center justify-between">
             <button type="submit" class="bg-blue-500 text-white py-2 px-4 rounded">Add Expense</button>
+            <button type="button" class="bg-gray-500 text-white py-2 px-4 rounded" (click)="reset()">Reset</button>
             <a routerLink="/" class="text-blue-500">Back</a>
         </div>
     </form>
