@@ -92,11 +92,14 @@ export class ListExpensesComponent implements OnInit {
 
   applyCustomFilter() {
     this.submitted.set(true);
-    const startDate = this.filterForm.get('startDate')?.value + 'T00:00:00.000Z';
-    const endDate = this.filterForm.get('endDate')?.value + 'T23:59:59.999Z';
-    const params: any = { startDate, endDate };
+    const startDate = this.filterForm.get('startDate')?.value;
+    const endDate = this.filterForm.get('endDate')?.value;
     if (startDate && endDate) {
       this.submitted.set(false);
+      const params = {
+        startDate: new Date(startDate).toISOString(),
+        endDate: new Date(endDate).toISOString(),
+      };
       this.getExpenses(params);
     }
   }
