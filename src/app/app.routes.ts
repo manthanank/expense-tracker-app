@@ -1,19 +1,41 @@
 import { Routes } from '@angular/router';
-import { LoginComponent } from './auth/login/login.component';
-import { SignupComponent } from './auth/signup/signup.component';
 import { EditExpenseComponent } from './expenses/edit-expense/edit-expense.component';
-import { ListExpensesComponent } from './expenses/list-expenses/list-expenses.component';
 import { AuthGuard } from './core/guards/auth.guard';
 import { AddExpenseComponent } from './expenses/add-expense/add-expense.component';
-import { ForgotPasswordComponent } from './auth/forgot-password/forgot-password.component';
-import { ResetPasswordComponent } from './auth/reset-password/reset-password.component';
 
 export const routes: Routes = [
-  { path: 'login', component: LoginComponent },
-  { path: 'signup', component: SignupComponent },
-  { path: 'forgot-password', component: ForgotPasswordComponent },
-  { path: 'reset-password/:token', component: ResetPasswordComponent },
-  { path: '', component: ListExpensesComponent, canActivate: [AuthGuard] },
+  {
+    path: 'login',
+    loadComponent: () =>
+      import('./auth/login/login.component').then((m) => m.LoginComponent),
+  },
+  {
+    path: 'signup',
+    loadComponent: () =>
+      import('./auth/signup/signup.component').then((m) => m.SignupComponent),
+  },
+  {
+    path: 'forgot-password',
+    loadComponent: () =>
+      import('./auth/forgot-password/forgot-password.component').then(
+        (m) => m.ForgotPasswordComponent
+      ),
+  },
+  {
+    path: 'reset-password/:token',
+    loadComponent: () =>
+      import('./auth/reset-password/reset-password.component').then(
+        (m) => m.ResetPasswordComponent
+      ),
+  },
+  {
+    path: '',
+    loadComponent: () =>
+      import('./expenses/list-expenses/list-expenses.component').then(
+        (m) => m.ListExpensesComponent
+      ),
+    canActivate: [AuthGuard],
+  },
   {
     path: 'add-expense',
     component: AddExpenseComponent,
@@ -27,5 +49,5 @@ export const routes: Routes = [
   {
     path: '**',
     redirectTo: '',
-  }
+  },
 ];

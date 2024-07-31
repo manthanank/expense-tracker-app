@@ -2,6 +2,7 @@ import { Component, inject, OnInit, signal } from '@angular/core';
 import { Router } from '@angular/router';
 import { ExpenseService } from '../../core/services/expense.service';
 import {
+  FormBuilder,
   FormControl,
   FormGroup,
   ReactiveFormsModule,
@@ -19,7 +20,7 @@ import { Subject, takeUntil } from 'rxjs';
   styleUrl: './list-expenses.component.scss',
 })
 export class ListExpensesComponent implements OnInit {
-  filterForm: FormGroup = new FormGroup({});
+  filterForm: FormGroup;
   expenses = signal<Expense[]>([]);
   filter = signal<string>('');
   startDate = signal<string>('');
@@ -30,20 +31,21 @@ export class ListExpensesComponent implements OnInit {
   selectedExpenseId = signal<string>('');
   isLoading = signal<boolean>(false);
   minDate = signal<string>('');
-  submitted = signal<boolean>(false);
   private unsubscribe$: Subject<void> = new Subject<void>();
 
   expenseService = inject(ExpenseService);
   router = inject(Router);
+  fb = inject(FormBuilder);
 
-  constructor() {}
+  constructor() {
+    this.filterForm = this.fb.group({
+      filter: [''],
+      startDate: ['', [Validators.required]],
+      endDate: ['', [Validators.required]],
+    });
+  }
 
   ngOnInit() {
-    this.filterForm = new FormGroup({
-      filter: new FormControl(''),
-      startDate: new FormControl('', [Validators.required]),
-      endDate: new FormControl('', [Validators.required]),
-    });
     this.getExpenses();
   }
 
@@ -70,7 +72,6 @@ export class ListExpensesComponent implements OnInit {
     }
     this.filterForm.get('startDate')?.reset();
     this.filterForm.get('endDate')?.reset();
-    this.submitted.set(false);
   }
 
   applyFilter() {
@@ -91,11 +92,9 @@ export class ListExpensesComponent implements OnInit {
   }
 
   applyCustomFilter() {
-    this.submitted.set(true);
     const startDate = this.filterForm.get('startDate')?.value;
     const endDate = this.filterForm.get('endDate')?.value;
     if (startDate && endDate) {
-      this.submitted.set(false);
       const params = {
         startDate: new Date(startDate).toISOString(),
         endDate: new Date(endDate).toISOString(),
