@@ -37,7 +37,7 @@ app.use('/api/auth', authRoutes);
 app.use('/api/expenses', expenseRoutes);
 
 app.get('/', (req, res) => {
-    res.send('Hello, World!');
+    res.send('API is running');
 });
 
 const PORT = process.env.PORT || 5000;
