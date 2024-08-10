@@ -8,11 +8,26 @@
             <label for="description" class="block text-sm font-bold mb-2">Description</label>
             <input id="description" type="text" class="w-full px-3 py-2 border rounded" formControlName="description"
                 name="description">
+            <div class="text-red-500 text-xs mt-1">
+                @if (description?.invalid && description?.touched) {
+                @if (description?.errors?.['required']) {
+                <div class="text-red-500 text-xs mt-1">Description is required</div>
+                }
+                @if (description?.errors?.['minlength']) {
+                <div class="text-red-500 text-xs mt-1">Description must be at least 3 characters</div>
+                }
+                }
+            </div>
         </div>
         <div class="mb-4">
             <label for="amount" class="block text-sm font-bold mb-2">Amount</label>
-            <input id="amount" type="number" class="w-full px-3 py-2 border rounded" formControlName="amount"
+            <input id="amount" type="number" class="w-full px-3 py-2 border rounded" formControlName="amount" min="0"
                 name="amount">
+            <div class="text-red-500 text-xs mt-1">
+                @if (amount?.invalid && amount?.touched) {
+                <div class="text-red-500 text-xs mt-1">Amount is required</div>
+                }
+            </div>
         </div>
         <div class="mb-4">
             <label for="category" class="block text-sm font-bold mb-2">Category</label>

@@ -65,6 +65,19 @@ exports.getExpenses = async (req, res) => {
     }
 };
 
+exports.getExpense = async (req, res) => {
+    const { id } = req.params;
+    try {
+        const expense = await Expense.findById(id);
+        if (!expense) {
+            return res.status(404).json({ message: 'Expense not found' });
+        }
+        res.json(expense);
+    } catch (err) {
+        res.status(500).json({ message: 'Server error' });
+    }
+};
+
 exports.updateExpense = async (req, res) => {
     const { id } = req.params;
     const { description, amount, date, category } = req.body;

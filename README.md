@@ -104,6 +104,7 @@ This is a full-stack expense tracker application built with Node.js for the back
 ### Expenses
 
 - **GET /api/expenses**: Get all expenses for the logged-in user
+- **GET /api/expenses/:id**: Get an expense by ID
 - **POST /api/expenses**: Add a new expense
 - **PUT /api/expenses/:id**: Update an existing expense
 - **DELETE /api/expenses/:id**: Delete an expense

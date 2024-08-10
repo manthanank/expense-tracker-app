@@ -2,6 +2,7 @@ const express = require('express');
 const {
     addExpense,
     getExpenses,
+    getExpense,
     updateExpense,
     deleteExpense,
 } = require('../controllers/expenseController');
@@ -12,6 +13,7 @@ router.use(authMiddleware);
 
 router.post('/', addExpense);
 router.get('/', getExpenses);
+router.get('/:id', getExpense);
 router.put('/:id', updateExpense);
 router.delete('/:id', deleteExpense);
 

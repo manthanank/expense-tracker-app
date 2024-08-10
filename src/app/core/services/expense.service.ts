@@ -29,6 +29,12 @@ export class ExpenseService {
     return this.http.get(this.apiUrl, { headers: this.getHeaders(), params });
   }
 
+  getExpense(id: string): Observable<any> {
+    return this.http.get(`${this.apiUrl}/${id}`, {
+      headers: this.getHeaders(),
+    });
+  }
+
   updateExpense(id: string, expense: any): Observable<any> {
     return this.http.put(`${this.apiUrl}/${id}`, expense, {
       headers: this.getHeaders(),

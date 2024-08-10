@@ -45,7 +45,7 @@ export class EditExpenseComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    const id = this.route.snapshot.paramMap.get('id');
+    const id = this.route.snapshot.paramMap.get('id') || '';
     this.getExpense(id);
   }
 
@@ -65,10 +65,10 @@ export class EditExpenseComponent implements OnInit, OnDestroy {
     return this.expenseForm.get('date');
   }
 
-  getExpense(id: string | null) {
-    this.expenseService.getExpenses({ id }).pipe(takeUntil(this.unsubscribe$)).subscribe({
+  getExpense(id: string) {
+    this.expenseService.getExpense(id).pipe(takeUntil(this.unsubscribe$)).subscribe({
       next: (res) => {
-        this.expense.set(res[0]);
+        this.expense.set(res);
         this.expenseForm.patchValue({
           description: this.expense().description,
           amount: this.expense().amount,
