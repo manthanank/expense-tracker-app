@@ -81,12 +81,15 @@ export class ListExpensesComponent implements OnInit {
     if (filterValue === 'week') {
       params.startDate = this.getPastDate(7) + 'T00:00:00.000Z';
       params.endDate = new Date().toISOString().split('T')[0] + 'T23:59:59.999Z';
+      params.period = 'week';
     } else if (filterValue === 'month') {
       params.startDate = this.getPastDate(30) + 'T00:00:00.000Z';
       params.endDate = new Date().toISOString().split('T')[0] + 'T23:59:59.999Z';
+      params.period = 'month';
     } else if (filterValue === '3months') {
       params.startDate = this.getPastDate(90) + 'T00:00:00.000Z';
       params.endDate = new Date().toISOString().split('T')[0] + 'T23:59:59.999Z';
+      params.period = '3months';
     }
     this.getExpenses(params);
   }
