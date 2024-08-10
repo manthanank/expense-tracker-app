@@ -56,7 +56,6 @@ export class ListExpensesComponent implements OnInit {
       .pipe(takeUntil(this.unsubscribe$))
       .subscribe({
         next: (res) => {
-          console.log(res);
           this.expenses.set(res.expenses);
           this.totalAmount.set(res.totalAmount);
           this.isLoading.set(false);
