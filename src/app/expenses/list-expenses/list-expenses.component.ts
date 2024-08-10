@@ -1,12 +1,7 @@
 import { Component, inject, OnInit, signal } from '@angular/core';
 import { Router } from '@angular/router';
 import { ExpenseService } from '../../core/services/expense.service';
-import {
-  FormBuilder,
-  FormGroup,
-  ReactiveFormsModule,
-  Validators,
-} from '@angular/forms';
+import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { DatePipe } from '@angular/common';
 import { Expense } from '../../core/models/expense.model';
 import { Subject, takeUntil } from 'rxjs';
@@ -32,6 +27,9 @@ export class ListExpensesComponent implements OnInit {
   minDate = signal<string>('');
   totalAmount = signal<number>(0);
   private unsubscribe$: Subject<void> = new Subject<void>();
+
+  private readonly DATE_FORMAT = 'T00:00:00.000Z';
+  private readonly END_DATE_FORMAT = 'T23:59:59.999Z';
 
   expenseService = inject(ExpenseService);
   router = inject(Router);
@@ -72,35 +70,34 @@ export class ListExpensesComponent implements OnInit {
     const filterValue = this.filterForm.get('filter')?.value;
     this.filter.set(filterValue);
     const params: any = {};
-    if (filterValue === 'week') {
-      params.startDate = this.getPastDate(7) + 'T00:00:00.000Z';
-      params.endDate =
-        new Date().toISOString().split('T')[0] + 'T23:59:59.999Z';
-      params.period = 'week';
-      this.getExpenses(params);
-    } else if (filterValue === 'month') {
-      params.startDate = this.getPastDate(30) + 'T00:00:00.000Z';
-      params.endDate =
-        new Date().toISOString().split('T')[0] + 'T23:59:59.999Z';
-      params.period = 'month';
-      this.getExpenses(params);
-    } else if (filterValue === '3months') {
-      params.startDate = this.getPastDate(90) + 'T00:00:00.000Z';
-      params.endDate =
-        new Date().toISOString().split('T')[0] + 'T23:59:59.999Z';
-      params.period = '3months';
-      this.getExpenses(params);
-    } else if (filterValue === '6months') {
-      params.startDate = this.getPastDate(180) + 'T00:00:00.000Z';
-      params.endDate =
-        new Date().toISOString().split('T')[0] + 'T23:59:59.999Z';
-      params.period = '6months';
-      this.getExpenses(params);
-    } else if (filterValue === 'custom') {
-      this.resetCustomFilter();
-    } else {
-      this.getExpenses();
+
+    switch (filterValue) {
+      case 'week':
+        this.setParams(params, 7, 'week');
+        break;
+      case 'month':
+        this.setParams(params, 30, 'month');
+        break;
+      case '3months':
+        this.setParams(params, 90, '3months');
+        break;
+      case '6months':
+        this.setParams(params, 180, '6months');
+        break;
+      case 'custom':
+        this.resetCustomFilter();
+        return;
+      default:
+        this.getExpenses();
+        return;
     }
+    this.getExpenses(params);
+  }
+
+  private setParams(params: any, days: number, period: string) {
+    params.startDate = this.getPastDate(days) + this.DATE_FORMAT;
+    params.endDate = new Date().toISOString().split('T')[0] + this.END_DATE_FORMAT;
+    params.period = period;
   }
 
   applyCustomFilter() {
@@ -109,8 +106,7 @@ export class ListExpensesComponent implements OnInit {
     if (startDate && endDate) {
       const params = {
         startDate: new Date(startDate).toISOString(),
-        endDate:
-          new Date(endDate).toISOString().split('T')[0] + 'T23:59:59.999Z',
+        endDate: new Date(endDate).toISOString().split('T')[0] + this.END_DATE_FORMAT,
         period: 'custom',
       };
       this.getExpenses(params);
@@ -148,7 +144,7 @@ export class ListExpensesComponent implements OnInit {
       .deleteExpense(id)
       .pipe(takeUntil(this.unsubscribe$))
       .subscribe({
-        next: (res) => {
+        next: () => {
           this.getExpenses();
           this.showConfirmDialog.set(false);
         },

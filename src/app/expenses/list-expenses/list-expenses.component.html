@@ -41,8 +41,8 @@
     @else if(errorMsg() && !isLoading()) {
     <p class="text-center text-red-500">{{ errorMsg() }}</p>
     }
-    @else if (expenses().length > 0 && !isLoading() && !errorMsg()) {
-    @if(expenses().length > 0 && expenses() !== []) {
+    @else if (expenses() && !isLoading() && !errorMsg()) {
+    @if(expenses().length > 0) {
     <ul>
         @for (expense of expenses(); track $index) {
         <li class="border-b py-2">
