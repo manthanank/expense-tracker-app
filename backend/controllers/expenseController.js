@@ -39,6 +39,10 @@ exports.getExpenses = async (req, res) => {
                 start = startDate ? new Date(startDate) : new Date(now.getFullYear(), now.getMonth() - 2, 1); // Start of the 3 months period
                 end = endDate ? new Date(endDate) : new Date(now.getFullYear(), now.getMonth() + 1, 0); // End of the month
                 break;
+            case '6months':
+                start = startDate ? new Date(startDate) : new Date(now.getFullYear(), now.getMonth() - 5, 1); // Start of the 6 months period
+                end = endDate ? new Date(endDate) : new Date(now.getFullYear(), now.getMonth() + 1, 0); // End of the month
+                break;
             case 'custom':
                 if (startDate && endDate) {
                     start = new Date(startDate);

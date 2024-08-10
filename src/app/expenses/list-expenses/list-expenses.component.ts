@@ -71,17 +71,7 @@ export class ListExpensesComponent implements OnInit {
   onFilterChange() {
     const filterValue = this.filterForm.get('filter')?.value;
     this.filter.set(filterValue);
-    if (this.filterForm.value !== 'custom') {
-      this.applyFilter();
-    }
-    this.filterForm.get('startDate')?.reset();
-    this.filterForm.get('endDate')?.reset();
-  }
-
-  applyFilter() {
     const params: any = {};
-    const filterValue = this.filterForm.get('filter')?.value;
-
     if (filterValue === 'week') {
       params.startDate = this.getPastDate(7) + 'T00:00:00.000Z';
       params.endDate =
@@ -100,14 +90,16 @@ export class ListExpensesComponent implements OnInit {
         new Date().toISOString().split('T')[0] + 'T23:59:59.999Z';
       params.period = '3months';
       this.getExpenses(params);
-    } else if (filterValue === 'custom') {
-      params.startDate = this.filterForm.get('startDate')?.value;
-      params.endDate = this.filterForm.get('endDate')?.value;
-      params.period = 'custom';
-      this.expenses.set([]);
-      this.totalAmount.set(0);
-    } else {
+    } else if (filterValue === '6months') {
+      params.startDate = this.getPastDate(180) + 'T00:00:00.000Z';
+      params.endDate =
+        new Date().toISOString().split('T')[0] + 'T23:59:59.999Z';
+      params.period = '6months';
       this.getExpenses(params);
+    } else if (filterValue === 'custom') {
+      this.resetCustomFilter();
+    } else {
+      this.getExpenses();
     }
   }
 
