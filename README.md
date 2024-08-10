@@ -18,6 +18,7 @@ This is a full-stack expense tracker application built with Node.js for the back
 - User authentication with JWT
 - Add, edit, delete, and view expenses
 - Filter expenses by date range and category
+- Total expenses calculation for the all-time and filtered expenses like this past week, last month, last 3 months, and custom date range.
 - Forgot and reset password functionality
 - Responsive design using Tailwind CSS
 

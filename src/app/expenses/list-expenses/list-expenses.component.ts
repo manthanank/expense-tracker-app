@@ -3,7 +3,6 @@ import { Router } from '@angular/router';
 import { ExpenseService } from '../../core/services/expense.service';
 import {
   FormBuilder,
-  FormControl,
   FormGroup,
   ReactiveFormsModule,
   Validators,
@@ -52,19 +51,22 @@ export class ListExpensesComponent implements OnInit {
 
   getExpenses(params: any = {}) {
     this.isLoading.set(true);
-    this.expenseService.getExpenses(params).pipe(takeUntil(this.unsubscribe$)).subscribe({
-      next: (res) => {
-        console.log(res);
-        this.expenses.set(res.expenses);
-        this.totalAmount.set(res.totalAmount);
-        this.isLoading.set(false);
-      },
-      error: (err) => {
-        console.error(err);
-        this.isLoading.set(false);
-        this.errorMsg.set(err?.error?.message || 'An error occurred');
-      },
-    });
+    this.expenseService
+      .getExpenses(params)
+      .pipe(takeUntil(this.unsubscribe$))
+      .subscribe({
+        next: (res) => {
+          console.log(res);
+          this.expenses.set(res.expenses);
+          this.totalAmount.set(res.totalAmount);
+          this.isLoading.set(false);
+        },
+        error: (err) => {
+          console.error(err);
+          this.isLoading.set(false);
+          this.errorMsg.set(err?.error?.message || 'An error occurred');
+        },
+      });
   }
 
   onFilterChange() {
@@ -83,18 +85,31 @@ export class ListExpensesComponent implements OnInit {
 
     if (filterValue === 'week') {
       params.startDate = this.getPastDate(7) + 'T00:00:00.000Z';
-      params.endDate = new Date().toISOString().split('T')[0] + 'T23:59:59.999Z';
+      params.endDate =
+        new Date().toISOString().split('T')[0] + 'T23:59:59.999Z';
       params.period = 'week';
+      this.getExpenses(params);
     } else if (filterValue === 'month') {
       params.startDate = this.getPastDate(30) + 'T00:00:00.000Z';
-      params.endDate = new Date().toISOString().split('T')[0] + 'T23:59:59.999Z';
+      params.endDate =
+        new Date().toISOString().split('T')[0] + 'T23:59:59.999Z';
       params.period = 'month';
+      this.getExpenses(params);
     } else if (filterValue === '3months') {
       params.startDate = this.getPastDate(90) + 'T00:00:00.000Z';
-      params.endDate = new Date().toISOString().split('T')[0] + 'T23:59:59.999Z';
+      params.endDate =
+        new Date().toISOString().split('T')[0] + 'T23:59:59.999Z';
       params.period = '3months';
+      this.getExpenses(params);
+    } else if (filterValue === 'custom') {
+      params.startDate = this.filterForm.get('startDate')?.value;
+      params.endDate = this.filterForm.get('endDate')?.value;
+      params.period = 'custom';
+      this.expenses.set([]);
+      this.totalAmount.set(0);
+    } else {
+      this.getExpenses(params);
     }
-    this.getExpenses(params);
   }
 
   applyCustomFilter() {
@@ -103,10 +118,19 @@ export class ListExpensesComponent implements OnInit {
     if (startDate && endDate) {
       const params = {
         startDate: new Date(startDate).toISOString(),
-        endDate: new Date(endDate).toISOString(),
+        endDate:
+          new Date(endDate).toISOString().split('T')[0] + 'T23:59:59.999Z',
+        period: 'custom',
       };
       this.getExpenses(params);
     }
+  }
+
+  resetCustomFilter() {
+    this.filterForm.get('startDate')?.reset();
+    this.filterForm.get('endDate')?.reset();
+    this.expenses.set([]);
+    this.totalAmount.set(0);
   }
 
   onStartDateChange() {
@@ -129,15 +153,18 @@ export class ListExpensesComponent implements OnInit {
   }
 
   deleteExpense(id: string) {
-    this.expenseService.deleteExpense(id).pipe(takeUntil(this.unsubscribe$)).subscribe({
-      next: (res) => {
-        this.getExpenses();
-        this.showConfirmDialog.set(false);
-      },
-      error: (err) => {
-        console.error(err);
-        this.error.set(err?.error?.message || 'An error occurred');
-      },
-    });
+    this.expenseService
+      .deleteExpense(id)
+      .pipe(takeUntil(this.unsubscribe$))
+      .subscribe({
+        next: (res) => {
+          this.getExpenses();
+          this.showConfirmDialog.set(false);
+        },
+        error: (err) => {
+          console.error(err);
+          this.error.set(err?.error?.message || 'An error occurred');
+        },
+      });
   }
 }

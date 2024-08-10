@@ -29,6 +29,8 @@
             <div class="text-red-500 text-sm">End Date is required</div>
             }
             <button class="bg-blue-500 text-white py-2 px-4 rounded mt-2" (click)="applyCustomFilter()">Apply</button>
+            <button class="bg-gray-500 text-white py-2 px-4 rounded mt-2 ml-2"
+                (click)="resetCustomFilter()">Reset</button>
         </div>
         }
     </form>
@@ -57,7 +59,7 @@
         }
     </ul>
     <div class="text-center mt-4">
-        <p>Total Amount: {{ totalAmount() }}</p>
+        <p class="text-lg font-bold">Total Amount: <i class="fa-solid fa-indian-rupee-sign"></i>{{ totalAmount() }}</p>
     </div>
     }
     @else {

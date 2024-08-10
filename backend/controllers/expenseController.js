@@ -27,17 +27,17 @@ exports.getExpenses = async (req, res) => {
     if (period) {
         switch (period) {
             case 'week':
-                start = new Date(now.getFullYear(), now.getMonth(), now.getDate() - now.getDay()); // Start of the week (Sunday)
-                end = new Date(start);
-                end.setDate(end.getDate() + 6); // End of the week (Saturday)
+                start = startDate ? new Date(startDate) : new Date(now.getFullYear(), now.getMonth(), now.getDate() - (now.getDay() === 0 ? 6 : now.getDay() - 1)); // Start of the week (Monday)
+                end = endDate ? new Date(endDate) : new Date(now.getFullYear(), now.getMonth(), now.getDate() + (7 - now.getDay())); // End of the week (Sunday)
+                end.setDate(end.getDate() + 6); // End of the week (Sunday)
                 break;
             case 'month':
-                start = new Date(now.getFullYear(), now.getMonth(), 1); // Start of the month
-                end = new Date(now.getFullYear(), now.getMonth() + 1, 0); // End of the month
+                start = startDate ? new Date(startDate) : new Date(now.getFullYear(), now.getMonth(), 1); // Start of the month
+                end = endDate ? new Date(endDate) : new Date(now.getFullYear(), now.getMonth() + 1, 0); // End of the month
                 break;
             case '3months':
-                start = new Date(now.getFullYear(), now.getMonth() - 2, 1); // Start of the 3-month period
-                end = new Date(now.getFullYear(), now.getMonth() + 1, 0); // End of the current month
+                start = startDate ? new Date(startDate) : new Date(now.getFullYear(), now.getMonth() - 2, 1); // Start of the 3 months period
+                end = endDate ? new Date(endDate) : new Date(now.getFullYear(), now.getMonth() + 1, 0); // End of the month
                 break;
             case 'custom':
                 if (startDate && endDate) {
@@ -57,7 +57,7 @@ exports.getExpenses = async (req, res) => {
     }
 
     try {
-        const expenses = await Expense.find(filter);
+        const expenses = await Expense.find(filter).sort({ date: -1 }); // Sort by date in descending order
         const totalAmount = expenses.reduce((acc, expense) => acc + expense.amount, 0); // Assuming `amount` is a field in your Expense model
         res.json({ totalAmount, expenses });
     } catch (err) {
