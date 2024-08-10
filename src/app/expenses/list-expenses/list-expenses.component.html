@@ -17,13 +17,15 @@
             <label for="startDate" class="block text-sm font-bold mb-2">Start Date</label>
             <input id="startDate" type="date" class="w-full px-3 py-2 border rounded" formControlName="startDate"
                 (change)="onStartDateChange()">
-            @if (filter() === 'custom' && (filterForm.controls['startDate'].errors?.['required'] && filterForm.controls['startDate'].touched)) {
+            @if (filter() === 'custom' && (filterForm.controls['startDate'].errors?.['required'] &&
+            filterForm.controls['startDate'].touched)) {
             <div class="text-red-500 text-sm">Start Date is required</div>
             }
             <label for="endDate" class="block text-sm font-bold mb-2 mt-2">End Date</label>
             <input id="endDate" type="date" class="w-full px-3 py-2 border rounded" formControlName="endDate"
                 [min]="minDate()">
-            @if (filter() === 'custom' && (filterForm.controls['endDate'].errors?.['required'] && filterForm.controls['endDate'].touched)) {
+            @if (filter() === 'custom' && (filterForm.controls['endDate'].errors?.['required'] &&
+            filterForm.controls['endDate'].touched)) {
             <div class="text-red-500 text-sm">End Date is required</div>
             }
             <button class="bg-blue-500 text-white py-2 px-4 rounded mt-2" (click)="applyCustomFilter()">Apply</button>
@@ -37,7 +39,7 @@
     <p class="text-center text-red-500">{{ errorMsg() }}</p>
     }
     @else if (expenses().length > 0 && !isLoading() && !errorMsg()) {
-    @if(expenses().length > 0) {
+    @if(expenses().length > 0 && expenses() !== []) {
     <ul>
         @for (expense of expenses(); track $index) {
         <li class="border-b py-2">
@@ -54,6 +56,9 @@
         </li>
         }
     </ul>
+    <div class="text-center mt-4">
+        <p>Total Amount: {{ totalAmount() }}</p>
+    </div>
     }
     @else {
     <p class="text-center text-gray-500">No expenses found</p>

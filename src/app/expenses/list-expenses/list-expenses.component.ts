@@ -31,6 +31,7 @@ export class ListExpensesComponent implements OnInit {
   selectedExpenseId = signal<string>('');
   isLoading = signal<boolean>(false);
   minDate = signal<string>('');
+  totalAmount = signal<number>(0);
   private unsubscribe$: Subject<void> = new Subject<void>();
 
   expenseService = inject(ExpenseService);
@@ -53,7 +54,9 @@ export class ListExpensesComponent implements OnInit {
     this.isLoading.set(true);
     this.expenseService.getExpenses(params).pipe(takeUntil(this.unsubscribe$)).subscribe({
       next: (res) => {
-        this.expenses.set(res);
+        console.log(res);
+        this.expenses.set(res.expenses);
+        this.totalAmount.set(res.totalAmount);
         this.isLoading.set(false);
       },
       error: (err) => {

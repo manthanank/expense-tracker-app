@@ -1,4 +1,7 @@
-export type Expenses = Expense[]
+export interface Expenses {
+  totalAmount: number
+  expenses: Expense[]
+}
 
 export interface Expense {
   _id: string
