@@ -42,6 +42,7 @@
     <p class="text-center text-red-500">{{ errorMsg() }}</p>
     }
     @else if (expenses() && !isLoading() && !errorMsg()) {
+    @if(expenses().length > 0) {
     <ul>
         @for (expense of expenses(); track $index) {
         <li class="border-b py-2">
@@ -64,6 +65,7 @@
     <div class="text-center mt-4">
         <p class="text-lg font-bold">Total Amount: <i class="fa-solid fa-indian-rupee-sign"></i>{{ totalAmount() }}</p>
     </div>
+    }
     }
 </div>
 
