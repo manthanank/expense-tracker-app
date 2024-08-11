@@ -42,7 +42,6 @@
     <p class="text-center text-red-500">{{ errorMsg() }}</p>
     }
     @else if (expenses() && !isLoading() && !errorMsg()) {
-    @if(expenses().length > 0) {
     <ul>
         @for (expense of expenses(); track $index) {
         <li class="border-b py-2">
@@ -58,14 +57,13 @@
             </div>
         </li>
         }
+        @empty{
+        <p class="text-center text-gray-500">No expenses found</p>
+        }
     </ul>
     <div class="text-center mt-4">
         <p class="text-lg font-bold">Total Amount: <i class="fa-solid fa-indian-rupee-sign"></i>{{ totalAmount() }}</p>
     </div>
-    }
-    @else {
-    <p class="text-center text-gray-500">No expenses found</p>
-    }
     }
 </div>
 
