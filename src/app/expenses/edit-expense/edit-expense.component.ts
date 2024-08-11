@@ -45,8 +45,23 @@ export class EditExpenseComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    const id = this.route.snapshot.paramMap.get('id') || '';
-    this.getExpense(id);
+    this.route.data.subscribe(
+      {
+        next: (res) => {
+          this.expense.set(res['expense']);
+          this.expenseForm.patchValue({
+            description: this.expense().description,
+            amount: this.expense().amount,
+            category: this.expense().category,
+            date: this.formatDate(this.expense().date),
+          });
+        },
+        error: (err) => {
+          console.error(err);
+          this.error.set(err?.error?.message || 'An error occurred');
+        },
+      }
+    );
   }
 
   get description() {
@@ -63,24 +78,6 @@ export class EditExpenseComponent implements OnInit, OnDestroy {
 
   get date() {
     return this.expenseForm.get('date');
-  }
-
-  getExpense(id: string) {
-    this.expenseService.getExpense(id).pipe(takeUntil(this.unsubscribe$)).subscribe({
-      next: (res) => {
-        this.expense.set(res);
-        this.expenseForm.patchValue({
-          description: this.expense().description,
-          amount: this.expense().amount,
-          category: this.expense().category,
-          date: this.formatDate(this.expense().date),
-        });
-      },
-      error: (err) => {
-        console.error(err);
-        this.error.set(err?.error?.message || 'An error occurred');
-      },
-    });
   }
 
   formatDate(date: string): string {

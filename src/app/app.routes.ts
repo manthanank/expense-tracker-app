@@ -2,6 +2,7 @@ import { Routes } from '@angular/router';
 import { EditExpenseComponent } from './expenses/edit-expense/edit-expense.component';
 import { AuthGuard } from './core/guards/auth.guard';
 import { AddExpenseComponent } from './expenses/add-expense/add-expense.component';
+import { ExpenseResolverService } from './core/services/expense-resolver.service';
 
 export const routes: Routes = [
   {
@@ -45,6 +46,9 @@ export const routes: Routes = [
     path: 'edit-expense/:id',
     component: EditExpenseComponent,
     canActivate: [AuthGuard],
+    resolve: {
+      expense: ExpenseResolverService
+    }
   },
   {
     path: '**',
