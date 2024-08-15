@@ -16,6 +16,7 @@ This is a full-stack expense tracker application built with Node.js for the back
 ## Features
 
 - User authentication with JWT
+- Landing page
 - Add, edit, delete, and view expenses
 - Filter expenses by date range and category
 - Total expenses calculation for the all-time and filtered expenses like this past week, last month, last 3 months, last 6 months and custom date range.

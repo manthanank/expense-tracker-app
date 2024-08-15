@@ -42,13 +42,17 @@ export class AuthService {
     return localStorage.getItem('token');
   }
 
+  redirectToExpenses() {
+    this.router.navigate(['/expenses']);
+  }
+
   logout() {
     localStorage.removeItem('token');
     localStorage.removeItem('tokenExpirationDate');
     if (this.tokenExpirationTimer) {
       clearTimeout(this.tokenExpirationTimer);
     }
-    this.router.navigate(['/login']);
+    // this.router.navigate(['']);
   }
 
   forgotPassword(email: string): Observable<any> {

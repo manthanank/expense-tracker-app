@@ -7,9 +7,6 @@
             @if (isLoggedIn()) {
                 <a routerLink="/add-expense" class="text-white no-underline mr-4 hover:underline">Add Expense</a>
             }
-            @if (!isLoggedIn()) {
-            <a routerLink="/login" class="text-white no-underline mr-4 hover:underline">Login</a>
-            }
             @if (isLoggedIn()) {
             <button (click)="logout()" class="text-white bg-transparent border-none cursor-pointer hover:underline">Logout</button>
             }

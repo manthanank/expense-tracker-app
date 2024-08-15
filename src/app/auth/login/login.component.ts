@@ -51,7 +51,7 @@ export class LoginComponent implements OnInit {
         .subscribe({
           next: (res) => {
             localStorage.setItem('token', res.token);
-            this.router.navigate(['/']);
+            this.router.navigate(['/expenses']);
           },
           error: (err) => {
             console.error(err);

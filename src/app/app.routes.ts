@@ -6,6 +6,11 @@ import { ExpenseResolverService } from './core/services/expense-resolver.service
 
 export const routes: Routes = [
   {
+    path: '',
+    loadComponent: () =>
+      import('./components/home/home.component').then((m) => m.HomeComponent),
+  },
+  {
     path: 'login',
     loadComponent: () =>
       import('./auth/login/login.component').then((m) => m.LoginComponent),
@@ -30,7 +35,7 @@ export const routes: Routes = [
       ),
   },
   {
-    path: '',
+    path: 'expenses',
     loadComponent: () =>
       import('./expenses/list-expenses/list-expenses.component').then(
         (m) => m.ListExpensesComponent
