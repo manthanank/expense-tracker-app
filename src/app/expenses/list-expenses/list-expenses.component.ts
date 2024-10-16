@@ -5,13 +5,15 @@ import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angula
 import { DatePipe } from '@angular/common';
 import { Expense } from '../../core/models/expense.model';
 import { Subject, takeUntil } from 'rxjs';
-
+import { ToastModule } from 'primeng/toast';
+import { MessageService } from 'primeng/api';
 @Component({
   selector: 'app-list-expenses',
   standalone: true,
-  imports: [ReactiveFormsModule, DatePipe],
+  imports: [ReactiveFormsModule, DatePipe, ToastModule],
   templateUrl: './list-expenses.component.html',
   styleUrl: './list-expenses.component.scss',
+  providers: [MessageService]
 })
 export class ListExpensesComponent implements OnInit {
   filterForm: FormGroup;
@@ -34,6 +36,7 @@ export class ListExpensesComponent implements OnInit {
   expenseService = inject(ExpenseService);
   router = inject(Router);
   fb = inject(FormBuilder);
+  messageService = inject(MessageService);
 
   constructor() {
     this.filterForm = this.fb.group({
@@ -147,6 +150,7 @@ export class ListExpensesComponent implements OnInit {
         next: () => {
           this.getExpenses();
           this.showConfirmDialog.set(false);
+          this.messageService.add({ severity: 'success', summary: 'Success', detail: 'Expense deleted successfully' });
         },
         error: (err) => {
           console.error(err);
