@@ -1,44 +1,61 @@
-const express = require('express');
-const bodyParser = require('body-parser');
+const express = require("express");
+const bodyParser = require("body-parser");
 const cors = require("cors");
+const connectDB = require("./config/db");
+const rateLimit = require("express-rate-limit");
+const morgan = require("morgan");
+const setupSwagger = require('./swagger');
 const authRoutes = require('./routes/auth');
 const expenseRoutes = require('./routes/expense');
-const mongoose = require('mongoose');
-
-const app = express();
 
 require("dotenv").config();
 
-const dbUser = process.env.MONGODB_USER;
-const dbPassword = process.env.MONGODB_PASSWORD;
+const app = express();
 
 // Connect to MongoDB
-mongoose
-    .connect(
-        `mongodb+srv://${dbUser}:${dbPassword}@cluster0.re3ha3x.mongodb.net/expense-tracker-app`,
-        { useNewUrlParser: true, useUnifiedTopology: true } // Add these options for MongoDB connection
-    )
-    .then(() => {
-        console.log("Connected to MongoDB database!");
-    })
-    .catch((error) => {
-        console.error("Connection failed!", error); // Log the error for better debugging
-    });
+connectDB();
 
 app.use(
-    cors({
-        origin: "*",
-    })
+  cors({
+    origin: "*",
+  })
 );
 
 app.use(bodyParser.json());
 
-app.use('/api/auth', authRoutes);
-app.use('/api/expenses', expenseRoutes);
+// Setup Swagger documentation
+setupSwagger(app);
 
-app.get('/', (req, res) => {
-    res.send('API is running');
+// Configure rate limiting
+const limiter = rateLimit({
+    windowMs: 15 * 60 * 1000,
+    max: 100
+});
+
+app.use("/api/", limiter);
+
+// Add request logging in development
+if (process.env.NODE_ENV === "development") {
+  app.use(morgan("dev"));
+}
+
+app.use("/api/auth", authRoutes);
+app.use("/api/expenses", expenseRoutes);
+
+app.get("/", (req, res) => {
+  res.send("API is running");
+});
+
+// Error handling middleware
+app.use((err, req, res, next) => {
+  console.error(err.stack);
+  res.status(500).json({ message: "Something went wrong!" });
 });
 
 const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+app.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
+  console.log(
+    `Swagger documentation available at ${process.env.BASE_URL}/api-docs`
+  );
+});
