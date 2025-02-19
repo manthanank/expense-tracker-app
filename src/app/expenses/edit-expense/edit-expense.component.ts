@@ -11,11 +11,10 @@ import { Expense } from '../../core/models/expense.model';
 import { Subject, takeUntil } from 'rxjs';
 
 @Component({
-  selector: 'app-edit-expense',
-  standalone: true,
-  imports: [ReactiveFormsModule, RouterLink],
-  templateUrl: './edit-expense.component.html',
-  styleUrl: './edit-expense.component.scss',
+    selector: 'app-edit-expense',
+    imports: [ReactiveFormsModule, RouterLink],
+    templateUrl: './edit-expense.component.html',
+    styleUrl: './edit-expense.component.scss'
 })
 export class EditExpenseComponent implements OnInit, OnDestroy {
   expenseForm: FormGroup;

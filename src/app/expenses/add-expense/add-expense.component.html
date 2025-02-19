@@ -1,54 +1,121 @@
-<div class="flex justify-center items-center p-4">
-    <form class="w-full max-w-sm" [formGroup]="expenseForm" (ngSubmit)="onSubmit()">
-        @if (error$ | async) {
-        <div class="text-red-500 text-center mb-4">{{ error$ | async }}</div>
-        }
-        <h2 class="text-center text-2xl mb-4">Add Expense</h2>
-        <div class="mb-4">
-            <label for="description" class="block text-sm font-bold mb-2">Description</label>
-            <div class="relative">
-                <input id="description" type="text" class="w-full px-3 py-2 border rounded"
-                    formControlName="description" name="description">
+<div class="min-h-screen bg-gray-50 py-8">
+    <div class="max-w-2xl mx-auto">
+        <!-- Card Container -->
+        <div class="bg-white rounded-xl shadow-lg p-8">
+            <!-- Header -->
+            <div class="mb-8 text-center">
+                <h2 class="text-2xl font-bold text-gray-800">Add New Expense</h2>
+                <p class="text-gray-600 mt-1">Enter your expense details below</p>
             </div>
-            <div class="text-red-500 text-xs mt-1">
-                @if (description?.invalid && description?.touched) {
-                @if (description?.errors?.['required']) {
-                <div class="text-red-500 text-xs mt-1">Description is required</div>
-                }
-                @if (description?.errors?.['minlength']) {
-                <div class="text-red-500 text-xs mt-1">Description must be at least 3 characters</div>
-                }
-                }
+
+            <!-- Error Alert -->
+            @if (error$ | async) {
+            <div class="mb-6 bg-red-50 border-l-4 border-red-500 p-4 rounded">
+                <div class="flex items-center">
+                    <i class="fas fa-exclamation-circle text-red-500 mr-2"></i>
+                    <p class="text-red-700">{{ error$ | async }}</p>
+                </div>
             </div>
+            }
+
+            <!-- Form -->
+            <form [formGroup]="expenseForm" (ngSubmit)="onSubmit()" class="space-y-6">
+                <!-- Description Field -->
+                <div>
+                    <label for="description" class="block text-sm font-medium text-gray-700 mb-2">
+                        Description
+                    </label>
+                    <div class="relative">
+                        <i class="fas fa-pencil-alt absolute left-3 top-3 text-gray-400"></i>
+                        <input id="description" 
+                               type="text" 
+                               formControlName="description"
+                               class="pl-10 w-full rounded-lg border border-gray-300 py-2 px-4 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                               placeholder="What did you spend on?">
+                    </div>
+                    @if (description?.invalid && description?.touched) {
+                    <p class="mt-1 text-sm text-red-600">
+                        @if (description?.errors?.['required']) {Description is required}
+                        @if (description?.errors?.['minlength']) {Description must be at least 3 characters}
+                    </p>
+                    }
+                </div>
+
+                <!-- Amount and Category Row -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <!-- Amount Field -->
+                    <div>
+                        <label for="amount" class="block text-sm font-medium text-gray-700 mb-2">
+                            Amount
+                        </label>
+                        <div class="relative">
+                            <i class="fas fa-rupee-sign absolute left-3 top-3 text-gray-400"></i>
+                            <input id="amount" 
+                                   type="number" 
+                                   formControlName="amount"
+                                   min="0"
+                                   class="pl-10 w-full rounded-lg border border-gray-300 py-2 px-4 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                   placeholder="0.00">
+                        </div>
+                        @if (amount?.invalid && amount?.touched) {
+                        <p class="mt-1 text-sm text-red-600">Amount is required</p>
+                        }
+                    </div>
+
+                    <!-- Category Field -->
+                    <div>
+                        <label for="category" class="block text-sm font-medium text-gray-700 mb-2">
+                            Category
+                        </label>
+                        <div class="relative">
+                            <i class="fas fa-tag absolute left-3 top-3 text-gray-400"></i>
+                            <select id="category" 
+                                    formControlName="category"
+                                    class="pl-10 w-full rounded-lg border border-gray-300 py-2 px-4 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent appearance-none">
+                                @for (cat of categories; track $index) {
+                                <option [value]="cat">{{ cat }}</option>
+                                }
+                            </select>
+                            <i class="fas fa-chevron-down absolute right-3 top-3 text-gray-400 pointer-events-none"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Date Field -->
+                <div>
+                    <label for="date" class="block text-sm font-medium text-gray-700 mb-2">
+                        Date
+                    </label>
+                    <div class="relative">
+                        <i class="fas fa-calendar absolute left-3 top-3 text-gray-400"></i>
+                        <input id="date" 
+                               type="date" 
+                               formControlName="date"
+                               class="pl-10 w-full rounded-lg border border-gray-300 py-2 px-4 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                    </div>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="flex items-center justify-between pt-6 border-t">
+                    <a routerLink="/" 
+                       class="inline-flex items-center px-4 py-2 text-sm text-gray-700 hover:text-gray-900">
+                        <i class="fas fa-arrow-left mr-2"></i>
+                        Back
+                    </a>
+                    <div class="space-x-3">
+                        <button type="button" 
+                                (click)="reset()"
+                                class="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500">
+                            Reset
+                        </button>
+                        <button type="submit"
+                                [disabled]="!expenseForm.valid"
+                                class="px-6 py-2 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed">
+                            Add Expense
+                        </button>
+                    </div>
+                </div>
+            </form>
         </div>
-        <div class="mb-4">
-            <label for="amount" class="block text-sm font-bold mb-2">Amount</label>
-            <div class="relative">
-                <input id="amount" type="number" class="w-full px-3 py-2 border rounded" formControlName="amount" min="0"
-                    name="amount">
-            </div>
-            <div class="text-red-500 text-xs mt-1">
-                @if (amount?.invalid && amount?.touched) {
-                <div class="text-red-500 text-xs mt-1">Amount is required</div>
-                }
-            </div>
-        </div>
-        <div class="mb-4">
-            <label for="category" class="block text-sm font-bold mb-2">Category</label>
-            <select id="category" class="w-full px-3 py-2 border rounded" formControlName="category" name="category">
-                @for (cat of categories; track $index) {
-                <option [value]="cat">{{ cat }}</option>
-                }
-            </select>
-        </div>
-        <div class="mb-4">
-            <label for="date" class="block text-sm font-bold mb-2">Date</label>
-            <input id="date" type="date" class="w-full px-3 py-2 border rounded" formControlName="date" name="date">
-        </div>
-        <div class="flex items-center justify-between">
-            <button type="submit" class="bg-blue-500 text-white py-2 px-4 rounded">Add Expense</button>
-            <button type="button" class="bg-gray-500 text-white py-2 px-4 rounded" (click)="reset()">Reset</button>
-            <a routerLink="/" class="text-blue-500">Back</a>
-        </div>
-    </form>
+    </div>
 </div>

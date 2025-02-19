@@ -32,7 +32,7 @@ This is a full-stack expense tracker application built with Node.js for the back
 ## Prerequisites
 
 - Node.js (v14.x or later)
-- Angular CLI (v18.x or later)
+- Angular CLI (v19.x or later)
 - MongoDB (local or remote instance)
 
 ## Installation

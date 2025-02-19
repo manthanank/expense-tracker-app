@@ -11,11 +11,10 @@ import { BehaviorSubject } from 'rxjs';
 import { AsyncPipe } from '@angular/common';
 
 @Component({
-  selector: 'app-add-expense',
-  standalone: true,
-  imports: [ReactiveFormsModule, RouterLink, AsyncPipe],
-  templateUrl: './add-expense.component.html',
-  styleUrl: './add-expense.component.scss',
+    selector: 'app-add-expense',
+    imports: [ReactiveFormsModule, RouterLink, AsyncPipe],
+    templateUrl: './add-expense.component.html',
+    styleUrl: './add-expense.component.scss'
 })
 export class AddExpenseComponent implements OnInit {
   expenseForm: FormGroup = new FormGroup({});

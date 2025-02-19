@@ -1,19 +1,20 @@
 import { Component, inject, OnInit, signal } from '@angular/core';
 import { Router } from '@angular/router';
 import { ExpenseService } from '../../core/services/expense.service';
-import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { DatePipe } from '@angular/common';
+import {
+  FormBuilder,
+  FormGroup,
+  ReactiveFormsModule,
+  Validators,
+} from '@angular/forms';
+import { DatePipe, NgClass } from '@angular/common';
 import { Expense } from '../../core/models/expense.model';
 import { Subject, takeUntil } from 'rxjs';
-import { ToastModule } from 'primeng/toast';
-import { MessageService } from 'primeng/api';
 @Component({
   selector: 'app-list-expenses',
-  standalone: true,
-  imports: [ReactiveFormsModule, DatePipe, ToastModule],
+  imports: [ReactiveFormsModule, DatePipe, NgClass],
   templateUrl: './list-expenses.component.html',
   styleUrl: './list-expenses.component.scss',
-  providers: [MessageService]
 })
 export class ListExpensesComponent implements OnInit {
   filterForm: FormGroup;
@@ -28,6 +29,8 @@ export class ListExpensesComponent implements OnInit {
   isLoading = signal<boolean>(false);
   minDate = signal<string>('');
   totalAmount = signal<number>(0);
+  currentMonthTotal: number = 0;
+  averagePerDay: number = 0;
   private unsubscribe$: Subject<void> = new Subject<void>();
 
   private readonly DATE_FORMAT = 'T00:00:00.000Z';
@@ -36,7 +39,6 @@ export class ListExpensesComponent implements OnInit {
   expenseService = inject(ExpenseService);
   router = inject(Router);
   fb = inject(FormBuilder);
-  messageService = inject(MessageService);
 
   constructor() {
     this.filterForm = this.fb.group({
@@ -99,7 +101,8 @@ export class ListExpensesComponent implements OnInit {
 
   private setParams(params: any, days: number, period: string) {
     params.startDate = this.getPastDate(days) + this.DATE_FORMAT;
-    params.endDate = new Date().toISOString().split('T')[0] + this.END_DATE_FORMAT;
+    params.endDate =
+      new Date().toISOString().split('T')[0] + this.END_DATE_FORMAT;
     params.period = period;
   }
 
@@ -109,7 +112,8 @@ export class ListExpensesComponent implements OnInit {
     if (startDate && endDate) {
       const params = {
         startDate: new Date(startDate).toISOString(),
-        endDate: new Date(endDate).toISOString().split('T')[0] + this.END_DATE_FORMAT,
+        endDate:
+          new Date(endDate).toISOString().split('T')[0] + this.END_DATE_FORMAT,
         period: 'custom',
       };
       this.getExpenses(params);
@@ -150,12 +154,24 @@ export class ListExpensesComponent implements OnInit {
         next: () => {
           this.getExpenses();
           this.showConfirmDialog.set(false);
-          this.messageService.add({ severity: 'success', summary: 'Success', detail: 'Expense deleted successfully' });
         },
         error: (err) => {
           console.error(err);
           this.error.set(err?.error?.message || 'An error occurred');
         },
       });
+  }
+
+  getCategoryClass(category: string): string {
+    const classes: { [key: string]: string } = {
+      Groceries: 'bg-green-100 text-green-800',
+      Leisure: 'bg-blue-100 text-blue-800',
+      Electronics: 'bg-yellow-100 text-yellow-800',
+      Utilities: 'bg-red-100 text-red-800',
+      Clothing: 'bg-purple-100 text-purple-800',
+      Health: 'bg-pink-100 text-pink-800',
+      Others: 'bg-gray-100 text-gray-800'
+    };
+    return classes[category] || 'bg-gray-100 text-gray-800';
   }
 }

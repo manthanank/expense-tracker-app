@@ -1,7 +1,11 @@
-<div class="grid grid-rows-layout min-h-screen">
-    <app-navbar></app-navbar>
-    <div class="flex-grow w-full px-4 sm:px-6 lg:px-8">
-        <router-outlet></router-outlet>
-    </div>
-    <app-footer class="w-full mt-auto"></app-footer>
+<div class="min-h-screen flex flex-col bg-gray-50">
+    <app-navbar class="sticky top-0 z-50"></app-navbar>
+    
+    <main class="flex-grow w-full p-4 sm:p-6 lg:p-8">
+        <div class="max-w-7xl mx-auto">
+            <router-outlet></router-outlet>
+        </div>
+    </main>
+    
+    <app-footer class="mt-auto"></app-footer>
 </div>

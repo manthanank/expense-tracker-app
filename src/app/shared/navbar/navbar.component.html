@@ -1,15 +1,85 @@
-<nav class="bg-gray-800 p-4">
-    <div class="container mx-auto flex justify-between items-center">
-        <div class="text-white text-lg">
-            <a routerLink="/" class="text-white no-underline mr-4 hover:underline">Expense Tracker</a>
+<nav class="bg-white shadow-md dark:bg-gray-900">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex justify-between h-16">
+            <!-- Logo and Brand -->
+            <div class="flex items-center">
+                <a routerLink="/" class="flex items-center space-x-2">
+                    <i class="fas fa-wallet text-blue-600 text-2xl"></i>
+                    <span class="text-xl font-bold text-gray-900 dark:text-white">Expense Tracker</span>
+                </a>
+            </div>
+
+            <!-- Desktop Navigation -->
+            <div class="hidden md:flex items-center space-x-4">
+                @if (isLoggedIn()) {
+                    <a routerLink="/dashboard" 
+                       routerLinkActive="text-blue-600"
+                       class="px-3 py-2 text-gray-700 dark:text-gray-300 hover:text-blue-600 transition-colors">
+                        Dashboard
+                    </a>
+                    <a routerLink="/add-expense" 
+                       routerLinkActive="text-blue-600"
+                       class="px-3 py-2 text-gray-700 dark:text-gray-300 hover:text-blue-600 transition-colors">
+                        Add Expense
+                    </a>
+                    <button (click)="logout()" 
+                            class="ml-4 px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors">
+                        Logout
+                    </button>
+                }
+                @else {
+                    <a routerLink="/login" 
+                       class="px-4 py-2 text-blue-600 hover:text-blue-700 transition-colors">
+                        Login
+                    </a>
+                    <a routerLink="/signup" 
+                       class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
+                        Sign Up
+                    </a>
+                }
+            </div>
+
+            <!-- Mobile Menu Button -->
+            <div class="md:hidden flex items-center">
+                <button (click)="toggleMobileMenu()" 
+                        class="text-gray-700 dark:text-gray-300 hover:text-blue-600">
+                    <i class="fas fa-bars text-xl"></i>
+                </button>
+            </div>
         </div>
-        <div>
+    </div>
+
+    <!-- Mobile Menu -->
+    @if (isMobileMenuOpen) {
+    <div class="md:hidden">
+        <div class="px-2 pt-2 pb-3 space-y-1">
             @if (isLoggedIn()) {
-                <a routerLink="/add-expense" class="text-white no-underline mr-4 hover:underline">Add Expense</a>
+                <a routerLink="/dashboard" 
+                   routerLinkActive="bg-blue-50 text-blue-600"
+                   class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 dark:text-gray-300 hover:bg-blue-50 hover:text-blue-600">
+                    Dashboard
+                </a>
+                <a routerLink="/add-expense" 
+                   routerLinkActive="bg-blue-50 text-blue-600"
+                   class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 dark:text-gray-300 hover:bg-blue-50 hover:text-blue-600">
+                    Add Expense
+                </a>
+                <button (click)="logout()" 
+                        class="w-full mt-2 px-3 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 transition-colors">
+                    Logout
+                </button>
             }
-            @if (isLoggedIn()) {
-            <button (click)="logout()" class="text-white bg-transparent border-none cursor-pointer hover:underline">Logout</button>
+            @else {
+                <a routerLink="/login" 
+                   class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 dark:text-gray-300 hover:bg-blue-50 hover:text-blue-600">
+                    Login
+                </a>
+                <a routerLink="/register" 
+                   class="block px-3 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors">
+                    Sign Up
+                </a>
             }
         </div>
     </div>
+    }
 </nav>

@@ -9,11 +9,10 @@ import {
 } from '@angular/forms';
 import { NgClass } from '@angular/common';
 @Component({
-  selector: 'app-signup',
-  standalone: true,
-  imports: [ReactiveFormsModule, RouterLink, NgClass],
-  templateUrl: './signup.component.html',
-  styleUrl: './signup.component.scss',
+    selector: 'app-signup',
+    imports: [ReactiveFormsModule, RouterLink, NgClass],
+    templateUrl: './signup.component.html',
+    styleUrl: './signup.component.scss'
 })
 export class SignupComponent implements OnInit {
   signupForm: FormGroup = new FormGroup({});

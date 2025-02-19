@@ -1,5 +1,83 @@
-<footer class="bg-gray-800 p-4 text-center text-white">
-    <div class="container mx-auto">
-        <p>&copy; 2024 Expense Tracker. All rights reserved.</p>
+<footer class="bg-gray-900">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <!-- Main Footer Content -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 py-12">
+            <!-- Brand Section -->
+            <div class="text-gray-300 space-y-4">
+                <div class="flex items-center space-x-2">
+                    <i class="fas fa-wallet text-blue-500 text-2xl"></i>
+                    <h3 class="text-xl font-bold text-white">Expense Tracker</h3>
+                </div>
+                <p class="text-sm">Managing your expenses made simple and efficient.</p>
+            </div>
+
+            <!-- Quick Links - Only shown when logged in -->
+            @if (isLoggedIn()) {
+            <div class="text-gray-300">
+                <h4 class="text-lg font-semibold text-white mb-4">Quick Links</h4>
+                <ul class="space-y-2">
+                    <li>
+                        <a routerLink="/dashboard" 
+                           class="text-sm hover:text-blue-500 transition-colors">
+                            Dashboard
+                        </a>
+                    </li>
+                    <li>
+                        <a routerLink="/add-expense" 
+                           class="text-sm hover:text-blue-500 transition-colors">
+                            Add Expense
+                        </a>
+                    </li>
+                </ul>
+            </div>
+            }
+            @else {
+            <!-- Auth Links - Only shown when not logged in -->
+            <div class="text-gray-300">
+                <h4 class="text-lg font-semibold text-white mb-4">Get Started</h4>
+                <ul class="space-y-2">
+                    <li>
+                        <a routerLink="/login" 
+                           class="text-sm hover:text-blue-500 transition-colors">
+                            Login
+                        </a>
+                    </li>
+                    <li>
+                        <a routerLink="/signup" 
+                           class="text-sm hover:text-blue-500 transition-colors">
+                            Sign Up
+                        </a>
+                    </li>
+                </ul>
+            </div>
+            }
+
+            <!-- Social Links - Always visible -->
+            <div class="text-gray-300">
+                <h4 class="text-lg font-semibold text-white mb-4">Connect With Us</h4>
+                <div class="flex space-x-4">
+                    <a href="https://github.com/manthanank/expense-tracker-app" 
+                       target="_blank" 
+                       rel="noopener noreferrer"
+                       class="text-gray-400 hover:text-white transition-colors">
+                        <i class="fab fa-github text-xl"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Bottom Bar -->
+        <div class="border-t border-gray-800 py-6">
+            <div class="flex flex-col sm:flex-row justify-between items-center text-gray-400 text-sm">
+                <p>&copy; {{currentYear}} Expense Tracker. All rights reserved.</p>
+                <div class="mt-4 sm:mt-0 space-x-4">
+                    @if (isLoggedIn()) {
+                    <a href="#" class="hover:text-white transition-colors">Privacy Policy</a>
+                    <span class="text-gray-600">|</span>
+                    <a href="#" class="hover:text-white transition-colors">Terms of Service</a>
+                    }
+                </div>
+            </div>
+        </div>
     </div>
 </footer>

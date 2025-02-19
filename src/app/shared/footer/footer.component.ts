@@ -1,12 +1,18 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
+import { RouterLink } from '@angular/router';
+import { AuthService } from '../../core/services/auth.service';
 
 @Component({
   selector: 'app-footer',
-  standalone: true,
-  imports: [],
+  imports: [RouterLink],
   templateUrl: './footer.component.html',
-  styleUrl: './footer.component.scss'
+  styleUrl: './footer.component.scss',
 })
 export class FooterComponent {
+  currentYear = new Date().getFullYear();
+  authService = inject(AuthService);
 
+  isLoggedIn(): boolean {
+    return this.authService.isAuthenticated();
+  }
 }

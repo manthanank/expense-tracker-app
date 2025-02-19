@@ -1,27 +1,65 @@
-<main class="flex-grow container mx-auto p-6">
-    <div class="text-center my-16">
-        <h2 class="text-4xl font-extrabold text-gray-800 mb-4">Manage Your Expenses Effortlessly</h2>
-        <p class="text-xl text-gray-600 mb-8">Track your spending, set budgets, and achieve your financial goals.</p>
-        <a routerLink="login" class="bg-blue-600 text-white px-6 py-3 rounded-lg text-lg font-semibold hover:bg-blue-700">Get
-            Started</a>
+<main class="min-h-screen bg-gradient-to-b to-white">
+    <!-- Hero Section -->
+    <div class="container mx-auto px-4 py-8 sm:py-12">
+        <div class="max-w-4xl mx-auto text-center">
+            <!-- More responsive heading sizes -->
+            <h1 class="text-4xl sm:text-5xl md:text-6xl font-bold text-gray-900 mb-4 sm:mb-6">
+                Smart Finance Management
+                <span class="text-blue-600 block mt-2">Made Simple</span>
+            </h1>
+            <!-- Adjust text size and padding for different screens -->
+            <p class="text-lg sm:text-xl text-gray-600 mb-6 sm:mb-8 leading-relaxed px-4 sm:px-0">
+                Take control of your finances with our powerful expense tracking tools.
+                Join thousands of users who have transformed their financial habits.
+            </p>
+            <!-- Better button layout for mobile -->
+            <div class="flex flex-col sm:flex-row gap-4 justify-center px-4 sm:px-0">
+                <a routerLink="/login" class="inline-flex items-center justify-center px-6 sm:px-8 py-3 sm:py-4 text-base sm:text-lg font-semibold text-white bg-blue-600 rounded-xl hover:bg-blue-700 transition-colors duration-300 w-full sm:w-auto">
+                    Get Started Free
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 sm:h-5 sm:w-5 ml-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                    </svg>
+                </a>
+            </div>
+        </div>
     </div>
-    <div class="flex flex-wrap justify-center">
-        <div class="w-full md:w-1/3 p-4">
-            <div class="bg-white shadow-md rounded-lg p-6">
-                <h3 class="text-2xl font-bold text-blue-600 mb-4">Track Expenses</h3>
-                <p class="text-gray-600">Easily log your expenses and view detailed reports.</p>
+
+    <!-- Features Grid -->
+    <div class="container mx-auto px-4 py-4 sm:py-8">
+        <!-- Responsive grid layout -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 sm:gap-8">
+            <!-- Feature 1 -->
+            <div class="bg-white rounded-2xl p-6 sm:p-8 shadow-lg hover:shadow-xl transition-shadow duration-300">
+                <div class="w-12 h-12 sm:w-14 sm:h-14 bg-blue-100 rounded-xl flex items-center justify-center mb-4 sm:mb-6">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 sm:h-8 sm:w-8 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
+                    </svg>
+                </div>
+                <h3 class="text-xl sm:text-2xl font-bold text-gray-900 mb-3 sm:mb-4">Smart Tracking</h3>
+                <p class="text-sm sm:text-base text-gray-600">Automatically categorize your expenses and track your spending patterns in real-time.</p>
             </div>
-        </div>
-        <div class="w-full md:w-1/3 p-4">
-            <div class="bg-white shadow-md rounded-lg p-6">
-                <h3 class="text-2xl font-bold text-blue-600 mb-4">Set Budgets</h3>
-                <p class="text-gray-600">Create budgets and monitor your spending.</p>
+
+            <!-- Feature 2 -->
+            <div class="bg-white rounded-2xl p-6 sm:p-8 shadow-lg hover:shadow-xl transition-shadow duration-300">
+                <div class="w-12 h-12 sm:w-14 sm:h-14 bg-blue-100 rounded-xl flex items-center justify-center mb-4 sm:mb-6">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 sm:h-8 sm:w-8 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 3.055A9.001 9.001 0 1020.945 13H11V3.055z" />
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.488 9H15V3.512A9.025 9.025 0 0120.488 9z" />
+                    </svg>
+                </div>
+                <h3 class="text-xl sm:text-2xl font-bold text-gray-900 mb-3 sm:mb-4">Visual Analytics</h3>
+                <p class="text-sm sm:text-base text-gray-600">Get detailed insights with interactive charts and personalized financial reports.</p>
             </div>
-        </div>
-        <div class="w-full md:w-1/3 p-4">
-            <div class="bg-white shadow-md rounded-lg p-6">
-                <h3 class="text-2xl font-bold text-blue-600 mb-4">Get Insights</h3>
-                <p class="text-gray-600">Analyze your financial habits with intuitive graphs.</p>
+
+            <!-- Feature 3 -->
+            <div class="bg-white rounded-2xl p-6 sm:p-8 shadow-lg hover:shadow-xl transition-shadow duration-300">
+                <div class="w-12 h-12 sm:w-14 sm:h-14 bg-blue-100 rounded-xl flex items-center justify-center mb-4 sm:mb-6">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 sm:h-8 sm:w-8 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                </div>
+                <h3 class="text-xl sm:text-2xl font-bold text-gray-900 mb-3 sm:mb-4">Budget Planning</h3>
+                <p class="text-sm sm:text-base text-gray-600">Set smart budgets with customizable alerts to stay on top of your financial goals.</p>
             </div>
         </div>
     </div>
