@@ -61,6 +61,29 @@ export class ListExpensesComponent implements OnInit {
         next: (res) => {
           this.expenses.set(res.expenses);
           this.totalAmount.set(res.totalAmount);
+          
+          // Calculate current month total
+          const now = new Date();
+          const currentMonth = now.getMonth();
+          const currentYear = now.getFullYear();
+          
+          this.currentMonthTotal = res.expenses
+            .filter((expense: Expense) => {
+              const expenseDate = new Date(expense.date);
+              return expenseDate.getMonth() === currentMonth && 
+                     expenseDate.getFullYear() === currentYear;
+            })
+            .reduce((total: number, expense: Expense) => total + expense.amount, 0);
+
+          // Calculate average per day
+          if (res.expenses.length > 0) {
+            const oldestExpense = new Date(Math.min(...res.expenses.map((e: Expense) => new Date(e.date).getTime())));
+            const daysDiff = Math.ceil((now.getTime() - oldestExpense.getTime()) / (1000 * 60 * 60 * 24));
+            this.averagePerDay = Math.round((res.totalAmount / (daysDiff || 1)) * 100) / 100;
+          } else {
+            this.averagePerDay = 0;
+          }
+
           this.isLoading.set(false);
         },
         error: (err) => {
