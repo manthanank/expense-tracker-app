@@ -1,0 +1,89 @@
+<div class="container mx-auto px-4 py-8 max-w-4xl">
+    <div class="bg-white rounded-xl shadow-md p-8">
+        <!-- Back Button -->
+        <div class="mb-6">
+            <a routerLink="/" class="inline-flex items-center text-blue-600 hover:text-blue-800 transition-colors">
+                <i class="fas fa-arrow-left mr-2"></i>
+                Back to Home
+            </a>
+        </div>
+
+        <h1 class="text-3xl font-bold text-gray-900 mb-6">Terms of Service</h1>
+        <p class="text-gray-600 mb-8">Last Updated: {{ lastUpdated }}</p>
+
+        <div class="space-y-6 text-gray-700">
+            <section>
+                <h2 class="text-xl font-semibold text-gray-800 mb-3">Introduction</h2>
+                <p>Welcome to Expense Tracker. These Terms of Service govern your use of our website and the Expense
+                    Tracker service offered on our website.</p>
+                <p class="mt-2">By accessing or using our service, you agree to be bound by these Terms. If you disagree
+                    with any part of the terms, you may not access the service.</p>
+            </section>
+
+            <section>
+                <h2 class="text-xl font-semibold text-gray-800 mb-3">Accounts</h2>
+                <p>When you create an account with us, you must provide information that is accurate, complete, and
+                    current at all times. Failure to do so constitutes a breach of the Terms, which may result in
+                    immediate termination of your account on our service.</p>
+                <p class="mt-2">You are responsible for safeguarding the password that you use to access the service and
+                    for any activities or actions under your password.</p>
+                <p class="mt-2">You agree not to disclose your password to any third party. You must notify us
+                    immediately upon becoming aware of any breach of security or unauthorized use of your account.</p>
+            </section>
+
+            <section>
+                <h2 class="text-xl font-semibold text-gray-800 mb-3">Intellectual Property</h2>
+                <p>The service and its original content, features, and functionality are and will remain the exclusive
+                    property of Expense Tracker and its licensors.</p>
+            </section>
+
+            <section>
+                <h2 class="text-xl font-semibold text-gray-800 mb-3">Termination</h2>
+                <p>We may terminate or suspend your account immediately, without prior notice or liability, for any
+                    reason whatsoever, including without limitation if you breach the Terms.</p>
+                <p class="mt-2">Upon termination, your right to use the service will immediately cease. If you wish to
+                    terminate your account, you may simply discontinue using the service.</p>
+            </section>
+
+            <section>
+                <h2 class="text-xl font-semibold text-gray-800 mb-3">Limitation of Liability</h2>
+                <p>In no event shall Expense Tracker, nor its directors, employees, partners, agents, suppliers, or
+                    affiliates, be liable for any indirect, incidental, special, consequential or punitive damages,
+                    including without limitation, loss of profits, data, use, goodwill, or other intangible losses,
+                    resulting from your access to or use of or inability to access or use the service.</p>
+            </section>
+
+            <section>
+                <h2 class="text-xl font-semibold text-gray-800 mb-3">Governing Law</h2>
+                <p>These Terms shall be governed and construed in accordance with the laws, without regard to its
+                    conflict of law provisions.</p>
+                <p class="mt-2">Our failure to enforce any right or provision of these Terms will not be considered a
+                    waiver of those rights.</p>
+            </section>
+
+            <section>
+                <h2 class="text-xl font-semibold text-gray-800 mb-3">Changes to These Terms</h2>
+                <p>We reserve the right, at our sole discretion, to modify or replace these Terms at any time. If a
+                    revision is material we will try to provide at least 30 days notice prior to any new terms taking
+                    effect.</p>
+                <p class="mt-2">By continuing to access or use our service after those revisions become effective, you
+                    agree to be bound by the revised terms.</p>
+            </section>
+
+            <section>
+                <h2 class="text-xl font-semibold text-gray-800 mb-3">Contact Us</h2>
+                <p>If you have any questions about these Terms, please contact us:</p>
+                <p class="mt-2">By email: {{email}}</p>
+            </section>
+        </div>
+
+        <!-- Back Button at Bottom -->
+        <div class="mt-8 pt-6 border-t border-gray-200">
+            <a routerLink="/"
+                class="inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
+                <i class="fas fa-home mr-2"></i>
+                Return to Home
+            </a>
+        </div>
+    </div>
+</div>

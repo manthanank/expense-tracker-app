@@ -14,7 +14,9 @@ export const routes: Routes = [
   {
     path: 'dashboard',
     loadComponent: () =>
-      import('./components/dashboard/dashboard.component').then((m) => m.DashboardComponent),
+      import('./components/dashboard/dashboard.component').then(
+        (m) => m.DashboardComponent
+      ),
     canActivate: [AuthGuard, AdminGuard],
   },
   {
@@ -59,8 +61,22 @@ export const routes: Routes = [
     component: EditExpenseComponent,
     canActivate: [AuthGuard],
     resolve: {
-      expense: ExpenseResolverService
-    }
+      expense: ExpenseResolverService,
+    },
+  },
+  {
+    path: 'privacy-policy',
+    loadComponent: () =>
+      import('./pages/privacy-policy/privacy-policy.component').then(
+        (m) => m.PrivacyPolicyComponent
+      ),
+  },
+  {
+    path: 'terms-of-service',
+    loadComponent: () =>
+      import('./pages/terms-of-service/terms-of-service.component').then(
+        (m) => m.TermsOfServiceComponent
+      ),
   },
   {
     path: '**',
