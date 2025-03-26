@@ -1,6 +1,7 @@
-import { Component, inject } from '@angular/core';
-import { Router, RouterLink } from '@angular/router';
+import { Component, inject, OnInit } from '@angular/core';
+import { Router, RouterLink, NavigationEnd } from '@angular/router';
 import { AuthService } from '../../core/services/auth.service';
+import { filter } from 'rxjs/operators';
 
 @Component({
     selector: 'app-navbar',
@@ -8,16 +9,27 @@ import { AuthService } from '../../core/services/auth.service';
     templateUrl: './navbar.component.html',
     styleUrl: './navbar.component.scss'
 })
-export class NavbarComponent {
+export class NavbarComponent implements OnInit {
   authService = inject(AuthService);
   router = inject(Router);
 
   isMobileMenuOpen = false;
 
-  constructor() {}
+  ngOnInit() {
+    // Subscribe to router events to close menu on navigation
+    this.router.events.pipe(
+      filter(event => event instanceof NavigationEnd)
+    ).subscribe(() => {
+      this.closeMobileMenu();
+    });
+  }
   
   toggleMobileMenu() {
     this.isMobileMenuOpen = !this.isMobileMenuOpen;
+  }
+  
+  closeMobileMenu() {
+    this.isMobileMenuOpen = false;
   }
   
   isLoggedIn(): boolean {
@@ -30,6 +42,7 @@ export class NavbarComponent {
 
   logout() {
     this.authService.logout();
+    this.closeMobileMenu();
     this.router.navigate(['/login']);
   }
 }
