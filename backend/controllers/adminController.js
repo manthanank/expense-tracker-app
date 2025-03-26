@@ -4,10 +4,11 @@ const Expense = require('../models/expense');
 // Get all users
 exports.getAllUsers = async (req, res) => {
     try {
-        const users = await User.find().select('-password');
-        res.json(users);
-    } catch (err) {
-        res.status(500).json({ message: 'Server error' });
+        const users = await User.find().select('-password').sort({ createdAt: -1 });
+        res.status(200).json(users);
+    } catch (error) {
+        console.error('Error getting users:', error);
+        res.status(500).json({ message: 'Failed to fetch users' });
     }
 };
 
@@ -29,12 +30,12 @@ exports.getUserById = async (req, res) => {
 // Get user expenses
 exports.getUserExpenses = async (req, res) => {
     try {
-        const expenses = await Expense.find({ user: req.params.id });
-        const totalAmount = expenses.reduce((acc, expense) => acc + expense.amount, 0);
-        
-        res.json({ totalAmount, expenses });
-    } catch (err) {
-        res.status(500).json({ message: 'Server error' });
+        const { userId } = req.params;
+        const expenses = await Expense.find({ user: userId }).sort({ date: -1 });
+        res.status(200).json({ expenses });
+    } catch (error) {
+        console.error('Error getting user expenses:', error);
+        res.status(500).json({ message: 'Failed to fetch user expenses' });
     }
 };
 

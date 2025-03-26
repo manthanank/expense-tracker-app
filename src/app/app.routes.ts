@@ -26,6 +26,22 @@ export const routes: Routes = [
         (m) => m.UserManagementComponent
       ),
     canActivate: [AuthGuard, AdminGuard],
+    children: [
+      {
+        path: '',
+        loadComponent: () =>
+          import('./users/user-list/user-list.component').then(
+            (m) => m.UserListComponent
+          ),
+      },
+      {
+        path: ':id',
+        loadComponent: () =>
+          import('./users/user-details/user-details.component').then(
+            (m) => m.UserDetailsComponent
+          ),
+      },
+    ],
   },
   {
     path: 'login',

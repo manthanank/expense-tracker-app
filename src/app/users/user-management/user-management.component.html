@@ -1,23 +1,5 @@
 <div class="container mx-auto">
   <h1 class="text-3xl font-bold text-gray-900 mb-8">Users</h1>
 
-  <!-- User List Component -->
-  <app-user-list 
-    [users]="users" 
-    [loading]="loading.users" 
-    (userSelected)="openUserDetailsModal($event)"
-    [formatDate]="formatDate">
-  </app-user-list>
-
-  <!-- User Details Modal Component -->
-  @if (isModalOpen && selectedUser) {
-    <app-user-details
-      [user]="selectedUser"
-      [expenses]="userExpenses"
-      [loading]="loading.userDetails"
-      [formatDate]="formatDate"
-      [formatCurrency]="formatCurrency"
-      (closeModal)="closeModal()">
-    </app-user-details>
-  }
+  <router-outlet></router-outlet>
 </div>

@@ -30,7 +30,7 @@ router.use(authMiddleware, isAdmin);
  *       500:
  *         description: Server error
  */
-router.get('/users', getAllUsers);
+router.get('/users', authMiddleware, isAdmin, getAllUsers);
 
 /**
  * @swagger
@@ -59,7 +59,7 @@ router.get('/users', getAllUsers);
  *       500:
  *         description: Server error
  */
-router.get('/users/:id', getUserById);
+router.get('/users/:id', authMiddleware, isAdmin, getUserById);
 
 /**
  * @swagger
@@ -86,7 +86,7 @@ router.get('/users/:id', getUserById);
  *       500:
  *         description: Server error
  */
-router.get('/users/:id/expenses', getUserExpenses);
+router.get('/users/:id/expenses', authMiddleware, isAdmin, getUserExpenses);
 
 /**
  * @swagger
