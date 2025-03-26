@@ -21,7 +21,7 @@ exports.signup = async (req, res) => {
     res.json({
       token: token,
       expiresIn: 3600,
-      user: { id: user._id, email: user.email },
+      user: { id: user._id, email: user.email, role: user.role },
     });
   } catch (err) {
     console.error(err); // Log the error to see the details
@@ -47,7 +47,7 @@ exports.login = async (req, res) => {
     res.json({
       token: token,
       expiresIn: 3600,
-      user: { id: user._id, email: user.email },
+      user: { id: user._id, email: user.email, role: user.role },
     });
   } catch (err) {
     res.status(500).json({ message: "Server error" });

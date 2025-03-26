@@ -1,17 +1,26 @@
 <div class="bg-white rounded-lg shadow-sm p-6">
-    <!-- Header with Stats -->
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-        <div class="bg-blue-50 p-4 rounded-lg">
-            <h3 class="text-sm text-blue-600 font-medium">Total Expenses</h3>
-            <p class="text-2xl font-bold"><i class="fa-solid fa-indian-rupee-sign"></i> {{ totalAmount() }}</p>
+    <!-- Header with Stats and Add Button -->
+    <div class="flex flex-col md:flex-row mb-6">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 flex-grow">
+            <div class="bg-blue-50 p-4 rounded-lg">
+                <h3 class="text-sm text-blue-600 font-medium">Total Expenses</h3>
+                <p class="text-2xl font-bold"><i class="fa-solid fa-indian-rupee-sign"></i> {{ totalAmount() }}</p>
+            </div>
+            <div class="bg-green-50 p-4 rounded-lg">
+                <h3 class="text-sm text-green-600 font-medium">This Month</h3>
+                <p class="text-2xl font-bold"><i class="fa-solid fa-indian-rupee-sign"></i> {{ currentMonthTotal }}</p>
+            </div>
+            <div class="bg-purple-50 p-4 rounded-lg">
+                <h3 class="text-sm text-purple-600 font-medium">Average/Day</h3>
+                <p class="text-2xl font-bold"><i class="fa-solid fa-indian-rupee-sign"></i> {{ averagePerDay }}</p>
+            </div>
         </div>
-        <div class="bg-green-50 p-4 rounded-lg">
-            <h3 class="text-sm text-green-600 font-medium">This Month</h3>
-            <p class="text-2xl font-bold"><i class="fa-solid fa-indian-rupee-sign"></i> {{ currentMonthTotal }}</p>
-        </div>
-        <div class="bg-purple-50 p-4 rounded-lg">
-            <h3 class="text-sm text-purple-600 font-medium">Average/Day</h3>
-            <p class="text-2xl font-bold"><i class="fa-solid fa-indian-rupee-sign"></i> {{ averagePerDay }}</p>
+        <div class="mt-4 md:mt-0 md:ml-4 flex justify-start md:justify-end items-center">
+            <a routerLink="/add-expense"
+                class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors flex items-center">
+                <i class="fas fa-plus mr-2"></i>
+                Add Expense
+            </a>
         </div>
     </div>
 
@@ -61,14 +70,18 @@
                 <table class="min-w-full divide-y divide-gray-200">
                     <thead class="bg-gray-50">
                         <tr>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                Date</th>
                             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                 Description</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Category
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                Category
                             </th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Amount
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                Amount
                             </th>
-                            <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Actions
+                            <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                Actions
                             </th>
                         </tr>
                     </thead>
@@ -92,7 +105,8 @@
                                 <button class="text-blue-600 hover:text-blue-800 mr-3" (click)="editExpense(expense)">
                                     <i class="fas fa-edit"></i>
                                 </button>
-                                <button class="text-red-600 hover:text-red-800" (click)="showDeleteConfirm(expense._id)">
+                                <button class="text-red-600 hover:text-red-800"
+                                    (click)="showDeleteConfirm(expense._id)">
                                     <i class="fas fa-trash"></i>
                                 </button>
                             </td>

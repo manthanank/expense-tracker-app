@@ -1,6 +1,7 @@
 import { Routes } from '@angular/router';
 import { EditExpenseComponent } from './expenses/edit-expense/edit-expense.component';
 import { AuthGuard } from './core/guards/auth.guard';
+import { AdminGuard } from './core/guards/admin.guard';
 import { AddExpenseComponent } from './expenses/add-expense/add-expense.component';
 import { ExpenseResolverService } from './core/services/expense-resolver.service';
 
@@ -9,6 +10,12 @@ export const routes: Routes = [
     path: '',
     loadComponent: () =>
       import('./components/home/home.component').then((m) => m.HomeComponent),
+  },
+  {
+    path: 'dashboard',
+    loadComponent: () =>
+      import('./components/dashboard/dashboard.component').then((m) => m.DashboardComponent),
+    canActivate: [AuthGuard, AdminGuard],
   },
   {
     path: 'login',

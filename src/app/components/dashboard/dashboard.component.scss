@@ -1,0 +1,22 @@
+:host {
+  display: block;
+  padding: 1rem 0;
+}
+
+.chart-container {
+  width: 100%;
+  overflow-x: auto;
+}
+
+// Fix for modal scrolling issues
+.overflow-hidden {
+  overflow: hidden;
+}
+
+// Better responsive styling for the chart
+@media (max-width: 768px) {
+  .container {
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+}

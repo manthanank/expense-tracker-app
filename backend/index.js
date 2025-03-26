@@ -7,6 +7,7 @@ const morgan = require("morgan");
 const setupSwagger = require('./swagger');
 const authRoutes = require('./routes/auth');
 const expenseRoutes = require('./routes/expense');
+const adminRoutes = require('./routes/admin');
 
 require("dotenv").config();
 
@@ -41,6 +42,7 @@ if (process.env.NODE_ENV === "development") {
 
 app.use("/api/auth", authRoutes);
 app.use("/api/expenses", expenseRoutes);
+app.use("/api/admin", adminRoutes);
 
 app.get("/", (req, res) => {
   res.send("API is running");

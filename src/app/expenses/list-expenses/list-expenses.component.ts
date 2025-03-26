@@ -10,9 +10,10 @@ import {
 import { DatePipe, NgClass } from '@angular/common';
 import { Expense } from '../../core/models/expense.model';
 import { Subject, takeUntil } from 'rxjs';
+import { RouterLink } from '@angular/router';
 @Component({
   selector: 'app-list-expenses',
-  imports: [ReactiveFormsModule, DatePipe, NgClass],
+  imports: [ReactiveFormsModule, DatePipe, NgClass, RouterLink],
   templateUrl: './list-expenses.component.html',
   styleUrl: './list-expenses.component.scss',
 })
@@ -61,25 +62,37 @@ export class ListExpensesComponent implements OnInit {
         next: (res) => {
           this.expenses.set(res.expenses);
           this.totalAmount.set(res.totalAmount);
-          
+
           // Calculate current month total
           const now = new Date();
           const currentMonth = now.getMonth();
           const currentYear = now.getFullYear();
-          
+
           this.currentMonthTotal = res.expenses
             .filter((expense: Expense) => {
               const expenseDate = new Date(expense.date);
-              return expenseDate.getMonth() === currentMonth && 
-                     expenseDate.getFullYear() === currentYear;
+              return (
+                expenseDate.getMonth() === currentMonth &&
+                expenseDate.getFullYear() === currentYear
+              );
             })
-            .reduce((total: number, expense: Expense) => total + expense.amount, 0);
+            .reduce(
+              (total: number, expense: Expense) => total + expense.amount,
+              0
+            );
 
           // Calculate average per day
           if (res.expenses.length > 0) {
-            const oldestExpense = new Date(Math.min(...res.expenses.map((e: Expense) => new Date(e.date).getTime())));
-            const daysDiff = Math.ceil((now.getTime() - oldestExpense.getTime()) / (1000 * 60 * 60 * 24));
-            this.averagePerDay = Math.round((res.totalAmount / (daysDiff || 1)) * 100) / 100;
+            const oldestExpense = new Date(
+              Math.min(
+                ...res.expenses.map((e: Expense) => new Date(e.date).getTime())
+              )
+            );
+            const daysDiff = Math.ceil(
+              (now.getTime() - oldestExpense.getTime()) / (1000 * 60 * 60 * 24)
+            );
+            this.averagePerDay =
+              Math.round((res.totalAmount / (daysDiff || 1)) * 100) / 100;
           } else {
             this.averagePerDay = 0;
           }
@@ -193,7 +206,7 @@ export class ListExpensesComponent implements OnInit {
       Utilities: 'bg-red-100 text-red-800',
       Clothing: 'bg-purple-100 text-purple-800',
       Health: 'bg-pink-100 text-pink-800',
-      Others: 'bg-gray-100 text-gray-800'
+      Others: 'bg-gray-100 text-gray-800',
     };
     return classes[category] || 'bg-gray-100 text-gray-800';
   }
