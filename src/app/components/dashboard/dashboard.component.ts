@@ -27,23 +27,13 @@ export class DashboardComponent implements OnInit, AfterViewInit {
   // Stats
   stats: any = {};
 
-  // Users
-  users: any[] = [];
-  selectedUser: any = null;
-  userExpenses: any[] = [];
-
   // Charts data
   categoryChartData: any[] = [];
 
   // UI state
   loading = {
     stats: false,
-    users: false,
-    userDetails: false,
   };
-
-  // Modal state
-  isModalOpen = false;
 
   // Chart dimensions
   containerWidth = 700;
@@ -53,7 +43,7 @@ export class DashboardComponent implements OnInit, AfterViewInit {
   showXAxis = true;
   showYAxis = true;
   gradient = false;
-  showLegend = true;
+  showLegend = false;
   showXAxisLabel = true;
   xAxisLabel = 'Category';
   showYAxisLabel = true;
@@ -75,7 +65,6 @@ export class DashboardComponent implements OnInit, AfterViewInit {
 
   ngOnInit(): void {
     this.loadStats();
-    this.loadUsers();
   }
 
   ngAfterViewInit() {
@@ -127,55 +116,6 @@ export class DashboardComponent implements OnInit, AfterViewInit {
         this.loading.stats = false;
       },
     });
-  }
-
-  loadUsers(): void {
-    this.loading.users = true;
-    this.adminService.getAllUsers().subscribe({
-      next: (data) => {
-        this.users = data;
-        this.loading.users = false;
-      },
-      error: (error) => {
-        console.error('Error loading users:', error);
-        this.loading.users = false;
-      },
-    });
-  }
-
-  selectUser(user: any): void {
-    this.selectedUser = user;
-    this.loadUserExpenses(user._id);
-  }
-
-  loadUserExpenses(userId: string): void {
-    this.loading.userDetails = true;
-    this.adminService.getUserExpenses(userId).subscribe({
-      next: (data) => {
-        this.userExpenses = data.expenses;
-        this.loading.userDetails = false;
-      },
-      error: (error) => {
-        console.error('Error loading user expenses:', error);
-        this.loading.userDetails = false;
-      },
-    });
-  }
-
-  // Modal handling
-  openUserDetailsModal(user: any): void {
-    this.selectUser(user);
-    this.isModalOpen = true;
-
-    // Add a class to prevent scrolling on the body when modal is open
-    document.body.classList.add('overflow-hidden');
-  }
-
-  closeModal(): void {
-    this.isModalOpen = false;
-
-    // Remove the class to allow scrolling again
-    document.body.classList.remove('overflow-hidden');
   }
 
   // Format currency
