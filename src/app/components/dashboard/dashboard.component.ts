@@ -6,7 +6,6 @@ import {
   AfterViewInit,
   ElementRef,
 } from '@angular/core';
-import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { AdminService } from '../../core/services/admin.service';
 import { NgxChartsModule } from '@swimlane/ngx-charts';
@@ -16,7 +15,7 @@ import { Color, ScaleType } from '@swimlane/ngx-charts';
 @Component({
   selector: 'app-dashboard',
   standalone: true,
-  imports: [CommonModule, RouterModule, NgxChartsModule, FormsModule],
+  imports: [RouterModule, NgxChartsModule, FormsModule],
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.scss'],
 })

@@ -1,4 +1,26 @@
 <div class="mb-8">
+  <!-- Search Bar -->
+  <div class="bg-white rounded-xl shadow-md p-4 mb-6">
+    <form [formGroup]="searchForm" class="flex flex-col sm:flex-row gap-4">
+      <div class="relative flex-1">
+        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+          <i class="fas fa-search text-gray-400"></i>
+        </div>
+        <input type="text" 
+               formControlName="searchTerm" 
+               placeholder="Search users by email or role..." 
+               class="pl-10 w-full rounded-lg border border-gray-300 py-2 px-4 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+      </div>
+    </form>
+  </div>
+
+  <!-- Error Message -->
+  @if (error) {
+    <div class="bg-red-50 text-red-600 p-4 rounded-lg mb-6">
+      {{ error }}
+    </div>
+  }
+
   <!-- User List -->
   @if (loading) {
     <div class="flex justify-center p-8">
@@ -60,6 +82,46 @@
           </tbody>
         </table>
       </div>
+      
+      <!-- Pagination Controls -->
+      @if (totalPages > 1) {
+        <div class="px-6 py-4 bg-gray-50 border-t border-gray-200 flex items-center justify-between">
+          <div class="text-sm text-gray-700">
+            Showing <span class="font-medium">{{ ((currentPage - 1) * pageSize) + 1 }}</span> to 
+            <span class="font-medium">{{ Math.min(currentPage * pageSize, totalUsers) }}</span> of 
+            <span class="font-medium">{{ totalUsers }}</span> users
+          </div>
+          <div class="flex space-x-2">
+            <button (click)="prevPage()" 
+                    [disabled]="currentPage === 1"
+                    [class.opacity-50]="currentPage === 1"
+                    class="px-3 py-1 border border-gray-300 rounded-md text-sm bg-white hover:bg-gray-50">
+              <i class="fas fa-chevron-left"></i>
+            </button>
+            
+            @for (pageNum of getPageNumbers(); track pageNum) {
+              @if (pageNum === -1) {
+                <span class="px-2 py-1 text-gray-500">...</span>
+              } @else {
+                <button (click)="goToPage(pageNum)"
+                        [class.bg-blue-600]="currentPage === pageNum"
+                        [class.text-white]="currentPage === pageNum"
+                        [class.hover:bg-gray-50]="currentPage !== pageNum"
+                        class="px-3 py-1 border border-gray-300 rounded-md text-sm">
+                  {{ pageNum }}
+                </button>
+              }
+            }
+            
+            <button (click)="nextPage()" 
+                    [disabled]="currentPage === totalPages"
+                    [class.opacity-50]="currentPage === totalPages"
+                    class="px-3 py-1 border border-gray-300 rounded-md text-sm bg-white hover:bg-gray-50">
+              <i class="fas fa-chevron-right"></i>
+            </button>
+          </div>
+        </div>
+      }
     </div>
   }
 </div>

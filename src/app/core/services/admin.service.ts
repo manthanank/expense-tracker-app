@@ -1,5 +1,5 @@
 import { Injectable, inject } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from '../../../environments/environment';
 
@@ -14,8 +14,16 @@ export class AdminService {
     return this.http.get(`${this.apiUrl}/admin/stats`);
   }
 
-  getAllUsers(): Observable<any> {
-    return this.http.get(`${this.apiUrl}/admin/users`);
+  getAllUsers(page = 1, limit = 10, search = ''): Observable<any> {
+    let params = new HttpParams()
+      .set('page', page.toString())
+      .set('limit', limit.toString());
+
+    if (search) {
+      params = params.set('search', search);
+    }
+
+    return this.http.get(`${this.apiUrl}/admin/users`, { params });
   }
 
   getUserDetails(userId: string): Observable<any> {

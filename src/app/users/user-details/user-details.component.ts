@@ -1,11 +1,11 @@
 import { Component, OnInit, inject } from '@angular/core';
-import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AdminService } from '../../core/services/admin.service';
+import { NgClass } from '@angular/common';
 
 @Component({
   selector: 'app-user-details',
-  imports: [CommonModule],
+  imports: [NgClass],
   templateUrl: './user-details.component.html',
   styleUrls: ['./user-details.component.scss'],
 })
