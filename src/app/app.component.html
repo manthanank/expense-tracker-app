@@ -1,11 +1,13 @@
 <div class="min-h-screen flex flex-col bg-gray-50">
     <app-navbar class="sticky top-0 z-50"></app-navbar>
-    
+
     <main class="flex-grow w-full p-4 sm:p-6 lg:p-8">
         <div class="max-w-7xl mx-auto">
             <router-outlet></router-outlet>
         </div>
     </main>
-    
-    <app-footer class="mt-auto"></app-footer>
+
+    <app-footer class="mt-auto" [visitorCount]="visitorCount()" [isVisitorCountLoading]="isVisitorCountLoading()"
+        [visitorCountError]="visitorCountError()">
+    </app-footer>
 </div>

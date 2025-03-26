@@ -1,24 +1,20 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
+import { Observable } from 'rxjs';
+import { environment } from '../../environments/environment';
+import { Visit } from '../models/visit.model';
 
 @Injectable({
   providedIn: 'root',
 })
 export class TrackService {
-  apiURL = 'https://visitor-tracking-api.vercel.app/api/visit';
+  apiURL = environment.trackingApiUrl;
 
   http = inject(HttpClient);
 
   constructor() {}
 
-  trackProjectVisit(projectName: string) {
-    this.http
-      .post(this.apiURL, {
-        projectName: projectName,
-      })
-      .subscribe({
-        next: (res) => console.log(res),
-        error: (err) => console.error(err),
-      });
+  trackProjectVisit(projectName: string): Observable<Visit> {
+    return this.http.post<Visit>(this.apiURL, { projectName });
   }
 }

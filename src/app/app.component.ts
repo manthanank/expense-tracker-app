@@ -1,9 +1,10 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, inject, OnInit, signal } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { NavbarComponent } from './shared/navbar/navbar.component';
 import { FooterComponent } from './shared/footer/footer.component';
 import { Meta } from '@angular/platform-browser';
 import { TrackService } from './services/track.service';
+import { Visit } from './models/visit.model';
 
 @Component({
   selector: 'app-root',
@@ -13,6 +14,10 @@ import { TrackService } from './services/track.service';
 })
 export class AppComponent implements OnInit {
   title = 'expense-tracker-app';
+
+  visitorCount = signal<number>(0);
+  isVisitorCountLoading = signal<boolean>(false);
+  visitorCountError = signal<string | null>(null);
 
   meta = inject(Meta);
   trackService = inject(TrackService);
@@ -54,6 +59,23 @@ export class AppComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.trackService.trackProjectVisit(this.title);
+    this.trackVisit();
+  }
+
+  private trackVisit(): void {
+    this.isVisitorCountLoading.set(true);
+    this.visitorCountError.set(null);
+
+    this.trackService.trackProjectVisit(this.title).subscribe({
+      next: (response: Visit) => {
+        this.visitorCount.set(response.uniqueVisitors);
+        this.isVisitorCountLoading.set(false);
+      },
+      error: (err: Error) => {
+        console.error('Failed to track visit:', err);
+        this.visitorCountError.set('Failed to load visitor count');
+        this.isVisitorCountLoading.set(false);
+      },
+    });
   }
 }
