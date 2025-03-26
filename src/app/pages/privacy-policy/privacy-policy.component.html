@@ -72,8 +72,13 @@
 
             <section>
                 <h2 class="text-xl font-semibold text-gray-800 mb-3">Contact Us</h2>
-                <p>If you have any questions about this Privacy Policy, please contact us:</p>
-                <p class="mt-2">By email: {{email}}</p>
+                <p>If you have any questions about these Terms, please contact us:</p>
+                <p class="mt-2">
+                    By email:
+                    <a [href]="'mailto:' + email" class="text-blue-600 hover:text-blue-800 transition-colors">
+                        {{ email }}
+                    </a>
+                </p>
             </section>
         </div>
 
