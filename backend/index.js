@@ -4,21 +4,34 @@ const cors = require("cors");
 const connectDB = require("./config/db");
 const rateLimit = require("express-rate-limit");
 const morgan = require("morgan");
+const helmet = require("helmet");
 const setupSwagger = require('./swagger');
 const authRoutes = require('./routes/auth');
 const expenseRoutes = require('./routes/expense');
 const adminRoutes = require('./routes/admin');
+const insightRoutes = require('./routes/insight');
 
+// Load environment variables
 require("dotenv").config();
+
+// Validate environment variables
+const validateEnv = require('./config/validateEnv');
+validateEnv();
 
 const app = express();
 
 // Connect to MongoDB
 connectDB();
 
+// Security headers middleware
+app.use(helmet());
+
 app.use(
   cors({
-    origin: "*",
+    origin: process.env.NODE_ENV === "production" 
+      ? "https://expense-tracker-app-manthanank.vercel.app" 
+      : "*",
+    credentials: true
   })
 );
 
@@ -29,8 +42,10 @@ setupSwagger(app);
 
 // Configure rate limiting
 const limiter = rateLimit({
-    windowMs: 15 * 60 * 1000,
-    max: 100
+    windowMs: 15 * 60 * 1000, // 15 minutes
+    max: 100, // 100 requests per IP
+    standardHeaders: true,
+    message: { message: "Too many requests, please try again later" }
 });
 
 app.use("/api/", limiter);
@@ -40,9 +55,11 @@ if (process.env.NODE_ENV === "development") {
   app.use(morgan("dev"));
 }
 
+// Routes
 app.use("/api/auth", authRoutes);
 app.use("/api/expenses", expenseRoutes);
 app.use("/api/admin", adminRoutes);
+app.use("/api/insights", insightRoutes);
 
 app.get("/", (req, res) => {
   res.send("API is running");

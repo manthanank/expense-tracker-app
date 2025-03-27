@@ -35,6 +35,10 @@ const options = {
       {
         name: 'Expenses',
         description: 'Expense management endpoints'
+      },
+      {
+        name: 'Insights',
+        description: 'AI-powered expense analysis endpoints'
       }
     ]
   },
