@@ -103,6 +103,14 @@ export const routes: Routes = [
       ),
   },
   {
+    path: 'insights',
+    loadComponent: () =>
+      import('./components/insights/insights.component').then(
+        (m) => m.InsightsComponent
+      ),
+    canActivate: [AuthGuard],
+  },
+  {
     path: '**',
     redirectTo: '',
   },
