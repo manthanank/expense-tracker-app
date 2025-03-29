@@ -1,6 +1,6 @@
 const express = require('express');
 const { getAIInsights } = require('../controllers/insightController');
-const authMiddleware = require('../middleware/authMiddleware');
+const authMiddleware = require('../middleware/authMiddleware').authMiddleware;
 const router = express.Router();
 
 // Apply authentication middleware

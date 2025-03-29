@@ -4,7 +4,10 @@ const {
   login,
   forgotPassword,
   resetPassword,
+  logout,
+  validateToken
 } = require("../controllers/authController");
+const middlewares = require("../middleware/authMiddleware"); // Import as a whole object
 const router = express.Router();
 
 /**
@@ -132,5 +135,41 @@ router.post("/forgot-password", forgotPassword);
  *         description: Server error
  */
 router.post("/reset-password/:token", resetPassword);
+
+/**
+ * @swagger
+ * /api/auth/logout:
+ *   post:
+ *     summary: Logout user
+ *     tags: [Auth]
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: Logout successful
+ *       401:
+ *         description: Unauthorized
+ *       500:
+ *         description: Server error
+ */
+router.post("/logout", middlewares.optionalAuthMiddleware, logout);
+
+/**
+ * @swagger
+ * /api/auth/validate-token:
+ *   get:
+ *     summary: Validate user token
+ *     tags: [Auth]
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: Token is valid
+ *       401:
+ *         description: Unauthorized
+ *       500:
+ *         description: Server error
+ */
+router.get("/validate-token", middlewares.authMiddleware, validateToken);
 
 module.exports = router;

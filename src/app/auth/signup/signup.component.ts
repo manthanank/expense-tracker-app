@@ -48,7 +48,7 @@ export class SignupComponent implements OnInit {
         })
         .subscribe({
           next: (res) => {
-            localStorage.setItem('token', res.token);
+            sessionStorage.setItem('token', res.token);
             this.router.navigate(['/']);
           },
           error: (err) => {

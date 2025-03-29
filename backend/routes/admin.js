@@ -5,7 +5,7 @@ const {
     getUserExpenses,
     getStats
 } = require('../controllers/adminController');
-const authMiddleware = require('../middleware/authMiddleware');
+const authMiddleware = require('../middleware/authMiddleware').authMiddleware;
 const isAdmin = require('../middleware/adminMiddleware');
 const router = express.Router();
 

@@ -2,6 +2,7 @@ const User = require("../models/user");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
 const sendEmail = require("../services/emailService");
+const TokenBlacklist = require("../models/tokenBlacklist");
 
 exports.signup = async (req, res) => {
   const { email, password } = req.body;
@@ -173,4 +174,48 @@ exports.resetPassword = async (req, res) => {
   } catch (err) {
     res.status(500).json({ message: "Server error" });
   }
+};
+
+exports.logout = async (req, res) => {
+  try {
+    // Get the token from the request
+    const token = req.headers.authorization?.split(' ')[1];
+    
+    if (!token) {
+      // If no token, just return success (no need to blacklist)
+      return res.status(200).json({ message: "Logged out successfully" });
+    }
+    
+    // Even if the token is invalid/expired, we'll try to blacklist it
+    let tokenData;
+    try {
+      tokenData = jwt.decode(token);
+    } catch (err) {
+      console.error("Error decoding token:", err);
+    }
+    
+    // If we can get expiry from token, use it, otherwise default to 1 hour from now
+    const expiresAt = tokenData?.exp 
+      ? new Date(tokenData.exp * 1000)
+      : new Date(Date.now() + 3600000);
+    
+    // Create a new TokenBlacklist entry
+    const blacklistedToken = new TokenBlacklist({
+      token,
+      expiresAt
+    });
+    
+    await blacklistedToken.save();
+    
+    res.status(200).json({ message: "Logged out successfully" });
+  } catch (err) {
+    console.error("Logout error:", err);
+    // Even if there's an error, we consider the logout successful from the client perspective
+    res.status(200).json({ message: "Logged out successfully" });
+  }
+};
+
+exports.validateToken = async (req, res) => {
+  // If we get here through the middleware, the token is valid
+  return res.status(200).json({ valid: true });
 };
