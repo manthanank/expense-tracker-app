@@ -22,16 +22,18 @@
                     Users
                 </a>
                 }
-                <a routerLink="insights" class="text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium">
+                <a routerLink="insights" routerLinkActive="text-blue-600"
+                    class="px-3 py-2 text-gray-700 dark:text-gray-300 hover:text-blue-600 transition-colors">
                     Insights
-                  </a>
+                </a>
                 <button (click)="logout()"
                     class="ml-4 px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors">
                     Logout
                 </button>
                 }
                 @else {
-                <a routerLink="/login" class="px-4 py-2 text-blue-600 hover:text-blue-700 transition-colors">
+                <a routerLink="/login" 
+                    class="px-3 py-2 text-blue-600 hover:text-blue-700 transition-colors">
                     Login
                 </a>
                 <a routerLink="/signup"
@@ -67,9 +69,11 @@
                 Users
             </a>
             }
-            <a routerLink="insights" class="text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium">
+            <a routerLink="insights" routerLinkActive="bg-blue-50 text-blue-600"
+                class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 dark:text-gray-300 hover:bg-blue-50 hover:text-blue-600"
+                (click)="closeMobileMenu()">
                 Insights
-              </a>
+            </a>
             <button (click)="logout()"
                 class="w-full mt-2 px-3 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 transition-colors">
                 Logout
