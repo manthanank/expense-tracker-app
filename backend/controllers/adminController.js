@@ -62,8 +62,8 @@ exports.getUserById = async (req, res) => {
 // Get user expenses
 exports.getUserExpenses = async (req, res) => {
   try {
-    const { userId } = req.params;
-    const expenses = await Expense.find({ user: userId }).sort({ date: -1 });
+    const { id } = req.params;
+    const expenses = await Expense.find({ user: id }).sort({ date: -1 });
     res.status(200).json({ expenses });
   } catch (error) {
     console.error("Error getting user expenses:", error);
