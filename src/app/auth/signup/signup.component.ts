@@ -18,6 +18,7 @@ export class SignupComponent implements OnInit {
   signupForm: FormGroup = new FormGroup({});
   error = signal<string>('');
   showPassword = signal<boolean>(false);
+  isLoading = signal<boolean>(false);
 
   authService = inject(AuthService);
   router = inject(Router);
@@ -41,6 +42,9 @@ export class SignupComponent implements OnInit {
 
   onSubmit() {
     if (this.signupForm.valid) {
+      this.isLoading.set(true);
+      this.error.set('');
+      
       this.authService
         .signup({
           email: this.signupForm.value.email,
@@ -49,11 +53,13 @@ export class SignupComponent implements OnInit {
         .subscribe({
           next: (res) => {
             sessionStorage.setItem('token', res.token);
+            this.isLoading.set(false);
             this.router.navigate(['/']);
           },
           error: (err) => {
             console.error(err);
             this.error.set(err?.error?.message || 'An error occurred');
+            this.isLoading.set(false);
           },
         });
     }

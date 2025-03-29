@@ -19,6 +19,7 @@ export class LoginComponent implements OnInit {
   loginForm: FormGroup = new FormGroup({});
   error = signal<string>('');
   showPassword = signal<boolean>(false);
+  isLoading = signal<boolean>(false);
 
   authService = inject(AuthService);
   router = inject(Router);
@@ -42,6 +43,9 @@ export class LoginComponent implements OnInit {
 
   onSubmit() {
     if (this.loginForm.valid) {
+      this.isLoading.set(true);
+      this.error.set('');
+      
       this.authService
         .login({
           email: this.loginForm.value.email,
@@ -50,11 +54,13 @@ export class LoginComponent implements OnInit {
         .subscribe({
           next: (res) => {
             sessionStorage.setItem('token', res.token);
+            this.isLoading.set(false);
             this.router.navigate(['/expenses']);
           },
           error: (err) => {
             console.error(err);
             this.error.set(err?.error?.message || 'An error occurred');
+            this.isLoading.set(false);
           },
         });
     }
