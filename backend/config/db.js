@@ -7,9 +7,6 @@ const connectDB = async () => {
     const conn = await mongoose.connect(mongoURI, {
       serverSelectionTimeoutMS: 5000, // Timeout after 5s instead of 30s
       socketTimeoutMS: 45000, // Close sockets after 45s of inactivity
-      useNewUrlParser: true,
-      useUnifiedTopology: true,
-      // The following options help with serverless environments
       minPoolSize: 1, // Maintain at least one connection
       maxPoolSize: 10, // Cap at 10 connections
       maxIdleTimeMS: 10000, // Close idle connections after 10 seconds
