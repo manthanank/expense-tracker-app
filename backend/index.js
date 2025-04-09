@@ -22,11 +22,6 @@ validateEnv();
 
 const app = express();
 
-// Only trust proxies in production
-if (process.env.NODE_ENV === "production") {
-  app.set('trust proxy', 1);
-}
-
 // Connect to MongoDB
 connectDB();
 
@@ -49,12 +44,10 @@ setupSwagger(app);
 
 // Configure rate limiting
 const limiter = rateLimit({
-  windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 100, // Limit each IP to 100 requests per window
-  standardHeaders: true, // Return rate limit info in the `RateLimit-*` headers
-  legacyHeaders: false, // Disable the `X-RateLimit-*` headers
-  // For environments with multiple proxies, use:
-  trustProxy: process.env.NODE_ENV === "production"
+    windowMs: 15 * 60 * 1000, // 15 minutes
+    max: 100, // 100 requests per IP
+    standardHeaders: true,
+    message: { message: "Too many requests, please try again later" }
 });
 
 app.use("/api/", limiter);
