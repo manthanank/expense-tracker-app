@@ -185,4 +185,8 @@ export class AuthService {
       })
     );
   }
+
+  handleSocialAuth(token: string, expiresIn: number, userData: any): void {
+    this.handleAuthentication(token, expiresIn, userData);
+  }
 }

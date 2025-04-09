@@ -219,3 +219,29 @@ exports.validateToken = async (req, res) => {
   // If we get here through the middleware, the token is valid
   return res.status(200).json({ valid: true });
 };
+
+exports.socialAuthCallback = async (req, res) => {
+  try {
+    const user = req.user;
+    
+    // Create and sign JWT
+    const token = jwt.sign({ id: user._id }, process.env.TOKEN_SECRET, {
+      expiresIn: "1h",
+    });
+    
+    // Determine the redirect URL based on environment
+    const frontendUrl = process.env.NODE_ENV === "production" 
+      ? "https://expense-tracker-app-manthanank.vercel.app" 
+      : "http://localhost:4200";
+    
+    // Redirect to frontend with token
+    res.redirect(`${frontendUrl}/auth/social?token=${token}&expiresIn=3600&userId=${user._id}&email=${encodeURIComponent(user.email)}&role=${user.role}`);
+  } catch (error) {
+    console.error("Social auth error:", error);
+    const frontendUrl = process.env.NODE_ENV === "production" 
+      ? "https://expense-tracker-app-manthanank.vercel.app" 
+      : "http://localhost:4200";
+    
+    res.redirect(`${frontendUrl}/login?error=Authentication failed`);
+  }
+};

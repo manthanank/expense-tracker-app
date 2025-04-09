@@ -10,6 +10,8 @@ const authRoutes = require('./routes/auth');
 const expenseRoutes = require('./routes/expense');
 const adminRoutes = require('./routes/admin');
 const insightRoutes = require('./routes/insight');
+const passport = require('passport');
+const configurePassport = require('./config/passport');
 
 // Load environment variables
 require("dotenv").config();
@@ -54,6 +56,10 @@ app.use("/api/", limiter);
 if (process.env.NODE_ENV === "development") {
   app.use(morgan("dev"));
 }
+
+// Passport middleware
+app.use(passport.initialize());
+configurePassport();
 
 // Routes
 app.use("/api/auth", authRoutes);

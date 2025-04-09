@@ -31,7 +31,8 @@
                     <input id="email" type="email" formControlName="email"
                         class="appearance-none block w-full px-3 py-3 border border-gray-300 rounded-lg placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500 text-sm"
                         placeholder="you@example.com">
-                    @if (signupForm.get('email')?.invalid && (signupForm.get('email')?.dirty || signupForm.get('email')?.touched)) {
+                    @if (signupForm.get('email')?.invalid && (signupForm.get('email')?.dirty ||
+                    signupForm.get('email')?.touched)) {
                     <div class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
                         <svg class="h-5 w-5 text-red-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -40,7 +41,8 @@
                     </div>
                     }
                 </div>
-                @if (signupForm.get('email')?.invalid && (signupForm.get('email')?.dirty || signupForm.get('email')?.touched)) {
+                @if (signupForm.get('email')?.invalid && (signupForm.get('email')?.dirty ||
+                signupForm.get('email')?.touched)) {
                 <p class="mt-2 text-sm text-red-600">
                     @if (signupForm.get('email')?.errors?.['required']) {Email is required}
                     @if (signupForm.get('email')?.errors?.['email']) {Invalid email format}
@@ -61,7 +63,8 @@
                         <span [ngClass]="showPassword() ? 'fa-solid fa-eye-slash' : 'fa-solid fa-eye'"></span>
                     </button>
                 </div>
-                @if (signupForm.get('password')?.invalid && (signupForm.get('password')?.dirty || signupForm.get('password')?.touched)) {
+                @if (signupForm.get('password')?.invalid && (signupForm.get('password')?.dirty ||
+                signupForm.get('password')?.touched)) {
                 <p class="mt-2 text-sm text-red-600">
                     @if (signupForm.get('password')?.errors?.['required']) {Password is required}
                     @if (signupForm.get('password')?.errors?.['minlength']) {Password must be at least 6 characters}
@@ -71,17 +74,20 @@
 
             <!-- Submit Button -->
             <div>
-                <button type="submit"
-                    [disabled]="!signupForm.valid || isLoading()"
+                <button type="submit" [disabled]="!signupForm.valid || isLoading()"
                     class="w-full flex justify-center py-3 px-4 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-70 disabled:cursor-not-allowed">
                     @if (isLoading()) {
-                        <svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                        </svg>
-                        Creating account...
+                    <svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg"
+                        fill="none" viewBox="0 0 24 24">
+                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4">
+                        </circle>
+                        <path class="opacity-75" fill="currentColor"
+                            d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z">
+                        </path>
+                    </svg>
+                    Creating account...
                     } @else {
-                        Create Account
+                    Create Account
                     }
                 </button>
             </div>
@@ -94,5 +100,28 @@
                 </p>
             </div>
         </form>
+
+        <!-- Social Login Options -->
+        <div class="mt-6">
+            <div class="relative">
+                <div class="absolute inset-0 flex items-center">
+                    <div class="w-full border-t border-gray-300"></div>
+                </div>
+                <div class="relative flex justify-center text-sm">
+                    <span class="px-2 bg-white text-gray-500">Or sign up with</span>
+                </div>
+            </div>
+
+            <div class="mt-6 grid grid-cols-2 gap-3">
+                <a href="{{apiUrl}}/auth/google"
+                    class="w-full inline-flex items-center justify-center py-2 px-4 border border-gray-300 rounded-lg shadow-sm bg-white text-sm font-medium text-gray-700 hover:bg-gray-50">
+                    <i class="fab fa-google text-red-500 mr-2"></i>
+                </a>
+                <a href="{{apiUrl}}/auth/github"
+                    class="w-full inline-flex items-center justify-center py-2 px-4 border border-gray-300 rounded-lg shadow-sm bg-white text-sm font-medium text-gray-700 hover:bg-gray-50">
+                    <i class="fab fa-github text-gray-800 mr-2"></i>
+                </a>
+            </div>
+        </div>
     </div>
 </div>

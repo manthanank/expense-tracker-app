@@ -8,6 +8,8 @@ import {
   Validators,
 } from '@angular/forms';
 import { NgClass } from '@angular/common';
+import { environment } from '../../../environments/environment';
+
 @Component({
     selector: 'app-signup',
     imports: [ReactiveFormsModule, RouterLink, NgClass],
@@ -19,6 +21,7 @@ export class SignupComponent implements OnInit {
   error = signal<string>('');
   showPassword = signal<boolean>(false);
   isLoading = signal<boolean>(false);
+  apiUrl = environment.apiUrl;
 
   authService = inject(AuthService);
   router = inject(Router);

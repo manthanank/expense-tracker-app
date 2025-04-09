@@ -8,6 +8,7 @@ import {
   Validators,
 } from '@angular/forms';
 import { NgClass } from '@angular/common';
+import { environment } from '../../../environments/environment';
 
 @Component({
     selector: 'app-login',
@@ -20,6 +21,7 @@ export class LoginComponent implements OnInit {
   error = signal<string>('');
   showPassword = signal<boolean>(false);
   isLoading = signal<boolean>(false);
+  apiUrl = environment.apiUrl;
 
   authService = inject(AuthService);
   router = inject(Router);

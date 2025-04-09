@@ -1,13 +1,15 @@
 const express = require("express");
+const passport = require("passport");
 const {
   signup,
   login,
   forgotPassword,
   resetPassword,
   logout,
-  validateToken
+  validateToken,
+  socialAuthCallback
 } = require("../controllers/authController");
-const middlewares = require("../middleware/authMiddleware"); // Import as a whole object
+const middlewares = require("../middleware/authMiddleware");
 const router = express.Router();
 
 /**
@@ -171,5 +173,61 @@ router.post("/logout", middlewares.optionalAuthMiddleware, logout);
  *         description: Server error
  */
 router.get("/validate-token", middlewares.authMiddleware, validateToken);
+
+// Google OAuth Routes
+/**
+ * @swagger
+ * /api/auth/google:
+ *   get:
+ *     summary: Authenticate with Google
+ *     tags: [Auth]
+ *     responses:
+ *       302:
+ *         description: Redirects to Google OAuth
+ */
+router.get('/google', passport.authenticate('google', { scope: ['profile', 'email'] }));
+
+/**
+ * @swagger
+ * /api/auth/google/callback:
+ *   get:
+ *     summary: Google OAuth callback
+ *     tags: [Auth]
+ *     responses:
+ *       302:
+ *         description: Redirects to frontend with token
+ */
+router.get('/google/callback', 
+  passport.authenticate('google', { session: false, failureRedirect: '/login' }),
+  socialAuthCallback
+);
+
+// GitHub OAuth Routes
+/**
+ * @swagger
+ * /api/auth/github:
+ *   get:
+ *     summary: Authenticate with GitHub
+ *     tags: [Auth]
+ *     responses:
+ *       302:
+ *         description: Redirects to GitHub OAuth
+ */
+router.get('/github', passport.authenticate('github', { scope: ['user:email'] }));
+
+/**
+ * @swagger
+ * /api/auth/github/callback:
+ *   get:
+ *     summary: GitHub OAuth callback
+ *     tags: [Auth]
+ *     responses:
+ *       302:
+ *         description: Redirects to frontend with token
+ */
+router.get('/github/callback',
+  passport.authenticate('github', { session: false, failureRedirect: '/login' }),
+  socialAuthCallback
+);
 
 module.exports = router;

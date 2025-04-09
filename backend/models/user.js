@@ -15,6 +15,15 @@ const UserSchema = new mongoose.Schema({
         enum: ['user', 'admin'],
         default: 'user'
     },
+    provider: {
+        type: String,
+        enum: ['local', 'google', 'github'],
+        default: 'local'
+    },
+    providerId: {
+        type: String,
+        default: null
+    },
     resetPasswordToken: String,
     resetPasswordExpires: Date,
     createdAt: {

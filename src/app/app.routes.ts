@@ -111,6 +111,13 @@ export const routes: Routes = [
     canActivate: [AuthGuard],
   },
   {
+    path: 'auth/social',
+    loadComponent: () =>
+      import('./auth/social-auth/social-auth.component').then(
+        (m) => m.SocialAuthComponent
+      ),
+  },
+  {
     path: '**',
     redirectTo: '',
   },
