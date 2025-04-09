@@ -22,6 +22,9 @@ validateEnv();
 
 const app = express();
 
+// Set up CORS and security headers
+app.set('trust proxy', 1);
+
 // Connect to MongoDB
 connectDB();
 
