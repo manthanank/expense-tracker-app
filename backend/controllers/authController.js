@@ -70,7 +70,7 @@ exports.forgotPassword = async (req, res) => {
     await user.save();
     // Generate reset URL based on environment
     const resetUrl =
-      process.env.NODE_ENV === "development"
+      process.env.NODE_ENV === "production"
         ? `http://localhost:4200/reset-password/${token}`
         : `https://expense-tracker-app-manthanank.vercel.app/reset-password/${token}`;
 

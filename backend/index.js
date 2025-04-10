@@ -35,9 +35,7 @@ app.use(helmet());
 
 app.use(
   cors({
-    origin: process.env.NODE_ENV === "production" 
-      ? "https://expense-tracker-app-manthanank.vercel.app" 
-      : "*",
+    origin: "*",
     credentials: true
   })
 );
