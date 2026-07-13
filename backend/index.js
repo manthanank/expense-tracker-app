@@ -27,8 +27,8 @@ if (process.env.NODE_ENV === "production") {
   app.set('trust proxy', 1);
 }
 
-// Connect to MongoDB
-connectDB();
+// Connect to MongoDB (non-blocking server startup check)
+connectDB().catch((err) => console.error("Initial MongoDB connection failed:", err.message));
 
 // Security headers middleware
 app.use(helmet());
@@ -41,6 +41,17 @@ app.use(
 );
 
 app.use(bodyParser.json());
+
+// Database connection verification middleware (ensures connection is ready before route execution)
+app.use(async (req, res, next) => {
+  try {
+    await connectDB();
+    next();
+  } catch (err) {
+    console.error('Database connection middleware error:', err);
+    res.status(503).json({ message: 'Database is temporarily unavailable. Please try again shortly.' });
+  }
+});
 
 // Setup Swagger documentation
 setupSwagger(app);
