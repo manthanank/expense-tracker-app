@@ -1,4 +1,4 @@
-import { Component, inject, OnInit, signal } from '@angular/core';
+import { Component, inject, OnDestroy, OnInit, signal } from '@angular/core';
 import { Router } from '@angular/router';
 import { ExpenseService } from '../../core/services/expense.service';
 import {
@@ -17,7 +17,7 @@ import { RouterLink } from '@angular/router';
   templateUrl: './list-expenses.component.html',
   styleUrl: './list-expenses.component.scss',
 })
-export class ListExpensesComponent implements OnInit {
+export class ListExpensesComponent implements OnInit, OnDestroy {
   filterForm: FormGroup;
   expenses = signal<Expense[]>([]);
   filter = signal<string>('');
@@ -51,6 +51,11 @@ export class ListExpensesComponent implements OnInit {
 
   ngOnInit() {
     this.getExpenses();
+  }
+
+  ngOnDestroy(): void {
+    this.unsubscribe$.next();
+    this.unsubscribe$.complete();
   }
 
   getExpenses(params: any = {}) {
@@ -212,6 +217,6 @@ export class ListExpensesComponent implements OnInit {
   }
 
   exportCSV() {
-    this.expenseService.exportExpenses();
+    this.expenseService.downloadExpensesCSV();
   }
 }

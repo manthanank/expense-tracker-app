@@ -53,19 +53,24 @@ export class ExpenseService {
     });
   }
 
-  exportExpenses(): void {
-    const token = this.authService.getToken();
-    const link = document.createElement('a');
-    // Use a GET request with fetch so we can pass the Auth header
-    fetch(`${this.apiUrl}/export`, {
-      headers: { Authorization: `Bearer ${token}` }
-    })
-      .then(res => res.blob())
-      .then(blob => {
+  exportExpenses(): Observable<Blob> {
+    return this.http.get(`${this.apiUrl}/export`, {
+      responseType: 'blob'
+    });
+  }
+
+  downloadExpensesCSV(): void {
+    this.exportExpenses().subscribe({
+      next: (blob: Blob) => {
+        const link = document.createElement('a');
         link.href = URL.createObjectURL(blob);
         link.download = 'expenses.csv';
         link.click();
         URL.revokeObjectURL(link.href);
-      });
+      },
+      error: (err) => {
+        console.error('Failed to export CSV:', err);
+      }
+    });
   }
 }

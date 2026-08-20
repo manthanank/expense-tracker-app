@@ -1,20 +1,25 @@
 const User = require("../models/user");
 const Expense = require("../models/expense");
 
+// Helper to escape regex special characters
+const escapeRegex = (string) => {
+  return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+};
+
 // Get all users with pagination and search
 exports.getAllUsers = async (req, res) => {
   try {
     const page = parseInt(req.query.page) || 1;
     const limit = parseInt(req.query.limit) || 10;
     const skip = (page - 1) * limit;
-    const search = req.query.search || "";
+    const search = req.query.search ? String(req.query.search).trim() : "";
 
-    // Create search query
+    // Create search query with escaped regex to prevent ReDoS
     const searchQuery = search
       ? {
           $or: [
-            { email: { $regex: search, $options: "i" } },
-            { role: { $regex: search, $options: "i" } },
+            { email: { $regex: escapeRegex(search), $options: "i" } },
+            { role: { $regex: escapeRegex(search), $options: "i" } },
           ],
         }
       : {};
@@ -63,7 +68,7 @@ exports.getUserById = async (req, res) => {
 exports.getUserExpenses = async (req, res) => {
   try {
     const { id } = req.params;
-    const expenses = await Expense.find({ user: id }).sort({ date: -1 });
+    const expenses = await Expense.find({ user: id, deletedAt: null }).sort({ date: -1 });
     res.status(200).json({ expenses });
   } catch (error) {
     console.error("Error getting user expenses:", error);
@@ -74,29 +79,24 @@ exports.getUserExpenses = async (req, res) => {
 // Get platform statistics
 exports.getStats = async (req, res) => {
   try {
-    const userCount = await User.countDocuments();
-    const expenseCount = await Expense.countDocuments();
-
-    // Total expense amount across platform
-    const expenses = await Expense.find();
-    const totalAmount = expenses.reduce(
-      (acc, expense) => acc + expense.amount,
-      0
-    );
-
-    // Get expense distribution by category
-    const categoryDistribution = await Expense.aggregate([
-      { $group: { _id: "$category", total: { $sum: "$amount" } } },
-      { $sort: { total: -1 } },
+    const [userCount, expenseCount, totalAgg, categoryDistribution, newUsers] = await Promise.all([
+      User.countDocuments(),
+      Expense.countDocuments({ deletedAt: null }),
+      Expense.aggregate([
+        { $match: { deletedAt: null } },
+        { $group: { _id: null, total: { $sum: "$amount" } } },
+      ]),
+      Expense.aggregate([
+        { $match: { deletedAt: null } },
+        { $group: { _id: "$category", total: { $sum: "$amount" } } },
+        { $sort: { total: -1 } },
+      ]),
+      User.countDocuments({
+        createdAt: { $gte: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000) },
+      }),
     ]);
 
-    // Recent registrations - last 30 days
-    const thirtyDaysAgo = new Date();
-    thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
-
-    const newUsers = await User.countDocuments({
-      createdAt: { $gte: thirtyDaysAgo },
-    });
+    const totalAmount = totalAgg.length > 0 ? totalAgg[0].total : 0;
 
     res.json({
       userCount,
@@ -106,7 +106,7 @@ exports.getStats = async (req, res) => {
       newUsers,
     });
   } catch (err) {
-    console.error(err);
+    console.error("Admin stats error:", err);
     res.status(500).json({ message: "Server error" });
   }
 };

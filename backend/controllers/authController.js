@@ -5,6 +5,14 @@ const crypto = require("crypto");
 const sendEmail = require("../services/emailService");
 const TokenBlacklist = require("../models/tokenBlacklist");
 
+const getFrontendUrl = () => {
+  return process.env.FRONTEND_URL || (
+    process.env.NODE_ENV === "production"
+      ? "https://expense-tracker-app-manthanank.vercel.app"
+      : "http://localhost:4200"
+  );
+};
+
 // Helper: generate an opaque refresh token and return its hash + raw value
 const generateRefreshToken = () => {
   const raw = crypto.randomBytes(40).toString('hex');
@@ -14,22 +22,37 @@ const generateRefreshToken = () => {
 
 exports.signup = async (req, res) => {
   const { email, password } = req.body;
+  if (!email || !password) {
+    return res.status(400).json({ message: "Email and password are required" });
+  }
+  if (typeof password !== "string" || password.length < 6) {
+    return res.status(400).json({ message: "Password must be at least 6 characters long" });
+  }
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  if (!emailRegex.test(String(email).trim())) {
+    return res.status(400).json({ message: "Invalid email format" });
+  }
+
   try {
-    // Check if user already exists
-    const existingUser = await User.findOne({ email });
+    const normalizedEmail = String(email).trim().toLowerCase();
+    const existingUser = await User.findOne({ email: normalizedEmail });
     if (existingUser) {
-      return res.status(409).json({ message: "User already exists" }); // 409 Conflict
+      return res.status(409).json({ message: "User already exists" });
     }
 
     const hashedPassword = await bcrypt.hash(password, 10);
-    const user = new User({ email, password: hashedPassword });
+    const user = new User({ email: normalizedEmail, password: hashedPassword });
     await user.save();
-    const token = jwt.sign({ id: user._id }, process.env.TOKEN_SECRET, {
-      expiresIn: "15m",
-    });
+
+    const token = jwt.sign(
+      { id: user._id, email: user.email, role: user.role },
+      process.env.TOKEN_SECRET,
+      { expiresIn: "15m" }
+    );
     const { raw: refreshRaw, hash: refreshHash } = generateRefreshToken();
     user.refreshToken = refreshHash;
     await user.save();
+
     res.json({
       token,
       refreshToken: refreshRaw,
@@ -44,22 +67,30 @@ exports.signup = async (req, res) => {
 
 exports.login = async (req, res) => {
   const { email, password } = req.body;
+  if (!email || !password) {
+    return res.status(400).json({ message: "Email and password are required" });
+  }
+
   try {
-    const user = await User.findOne({ email });
+    const normalizedEmail = String(email).trim().toLowerCase();
+    const user = await User.findOne({ email: normalizedEmail });
     if (!user) {
       return res.status(400).json({ message: "Invalid credentials" });
     }
-    // Verify the password
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) {
       return res.status(400).json({ message: "Invalid credentials" });
     }
-    const token = jwt.sign({ id: user._id }, process.env.TOKEN_SECRET, {
-      expiresIn: "15m",
-    });
+
+    const token = jwt.sign(
+      { id: user._id, email: user.email, role: user.role },
+      process.env.TOKEN_SECRET,
+      { expiresIn: "15m" }
+    );
     const { raw: refreshRaw, hash: refreshHash } = generateRefreshToken();
     user.refreshToken = refreshHash;
     await user.save();
+
     res.json({
       token,
       refreshToken: refreshRaw,
@@ -73,10 +104,17 @@ exports.login = async (req, res) => {
 
 exports.forgotPassword = async (req, res) => {
   const { email } = req.body;
+  if (!email) {
+    return res.status(400).json({ message: "Email is required" });
+  }
+  const genericMessage = "If this email is registered, a password reset link has been sent.";
+
   try {
-    const user = await User.findOne({ email });
+    const normalizedEmail = String(email).trim().toLowerCase();
+    const user = await User.findOne({ email: normalizedEmail });
     if (!user) {
-      return res.status(400).json({ message: "User not found" });
+      // Uniform response prevents user enumeration
+      return res.json({ message: genericMessage });
     }
     const token = jwt.sign({ id: user._id }, process.env.TOKEN_SECRET, {
       expiresIn: "1h",
@@ -84,13 +122,10 @@ exports.forgotPassword = async (req, res) => {
     user.resetPasswordToken = token;
     user.resetPasswordExpires = Date.now() + 3600000; // 1 hour
     await user.save();
-    // Generate reset URL based on environment
-    const resetUrl =
-      process.env.NODE_ENV === "production"
-        ? `http://localhost:4200/reset-password/${token}`
-        : `https://expense-tracker-app-manthanank.vercel.app/reset-password/${token}`;
 
-    // email content
+    const frontendUrl = getFrontendUrl();
+    const resetUrl = `${frontendUrl}/reset-password/${token}`;
+
     const message = `
         <!DOCTYPE html>
         <html>
@@ -163,9 +198,7 @@ exports.forgotPassword = async (req, res) => {
     `;
 
     await sendEmail(user.email, "Password Reset", message);
-
-    // Send the email with the reset link
-    res.json({ message: "Email sent" });
+    res.json({ message: genericMessage });
   } catch (err) {
     res.status(500).json({ message: "Server error" });
   }
@@ -174,6 +207,9 @@ exports.forgotPassword = async (req, res) => {
 exports.resetPassword = async (req, res) => {
   const { token } = req.params;
   const { password } = req.body;
+  if (!password || typeof password !== "string" || password.length < 6) {
+    return res.status(400).json({ message: "Password must be at least 6 characters long" });
+  }
   try {
     const user = await User.findOne({
       resetPasswordToken: token,
@@ -185,6 +221,7 @@ exports.resetPassword = async (req, res) => {
     user.password = await bcrypt.hash(password, 10);
     user.resetPasswordToken = undefined;
     user.resetPasswordExpires = undefined;
+    user.refreshToken = null; // Revoke refresh token on password reset
     await user.save();
     res.json({ message: "Password updated" });
   } catch (err) {
@@ -233,11 +270,13 @@ exports.refreshAccessToken = async (req, res) => {
     if (!user) {
       return res.status(401).json({ message: "Invalid or expired refresh token" });
     }
-    // Issue a new short-lived access token
-    const newAccessToken = jwt.sign({ id: user._id }, process.env.TOKEN_SECRET, {
-      expiresIn: "15m",
-    });
-    // Rotate the refresh token (security best practice)
+    // Issue a new short-lived access token with full identity claims
+    const newAccessToken = jwt.sign(
+      { id: user._id, email: user.email, role: user.role },
+      process.env.TOKEN_SECRET,
+      { expiresIn: "15m" }
+    );
+    // Rotate the refresh token
     const { raw: newRefreshRaw, hash: newRefreshHash } = generateRefreshToken();
     user.refreshToken = newRefreshHash;
     await user.save();
@@ -245,6 +284,7 @@ exports.refreshAccessToken = async (req, res) => {
       token: newAccessToken,
       refreshToken: newRefreshRaw,
       expiresIn: 900,
+      user: { id: user._id, email: user.email, role: user.role }
     });
   } catch (err) {
     console.error("Refresh token error:", err);
@@ -253,32 +293,25 @@ exports.refreshAccessToken = async (req, res) => {
 };
 
 exports.validateToken = async (req, res) => {
-  // If we get here through the middleware, the token is valid
-  return res.status(200).json({ valid: true });
+  return res.status(200).json({ valid: true, user: req.user });
 };
 
 exports.socialAuthCallback = async (req, res) => {
   try {
     const user = req.user;
     
-    // Create and sign JWT
-    const token = jwt.sign({ id: user._id }, process.env.TOKEN_SECRET, {
-      expiresIn: "1h",
-    });
+    // Create and sign JWT with claims
+    const token = jwt.sign(
+      { id: user._id, email: user.email, role: user.role },
+      process.env.TOKEN_SECRET,
+      { expiresIn: "1h" }
+    );
     
-    // Determine the redirect URL based on environment
-    const frontendUrl = process.env.NODE_ENV === "production" 
-      ? "https://expense-tracker-app-manthanank.vercel.app" 
-      : "http://localhost:4200";
-    
-    // Redirect to frontend with token
+    const frontendUrl = getFrontendUrl();
     res.redirect(`${frontendUrl}/auth/social?token=${token}&expiresIn=3600&userId=${user._id}&email=${encodeURIComponent(user.email)}&role=${user.role}`);
   } catch (error) {
     console.error("Social auth error:", error);
-    const frontendUrl = process.env.NODE_ENV === "production" 
-      ? "https://expense-tracker-app-manthanank.vercel.app" 
-      : "http://localhost:4200";
-    
+    const frontendUrl = getFrontendUrl();
     res.redirect(`${frontendUrl}/login?error=Authentication failed`);
   }
 };

@@ -30,7 +30,7 @@ router.use(authMiddleware, isAdmin);
  *       500:
  *         description: Server error
  */
-router.get('/users', authMiddleware, isAdmin, getAllUsers);
+router.get('/users', getAllUsers);
 
 /**
  * @swagger
@@ -58,8 +58,8 @@ router.get('/users', authMiddleware, isAdmin, getAllUsers);
  *         description: User not found
  *       500:
  *         description: Server error
- */
-router.get('/users/:id', authMiddleware, isAdmin, getUserById);
+ * */
+router.get('/users/:id', getUserById);
 
 /**
  * @swagger
@@ -85,8 +85,8 @@ router.get('/users/:id', authMiddleware, isAdmin, getUserById);
  *         description: Forbidden - Admin only
  *       500:
  *         description: Server error
- */
-router.get('/users/:id/expenses', authMiddleware, isAdmin, getUserExpenses);
+ * */
+router.get('/users/:id/expenses', getUserExpenses);
 
 /**
  * @swagger

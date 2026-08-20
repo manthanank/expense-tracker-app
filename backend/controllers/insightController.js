@@ -9,8 +9,8 @@ exports.getAIInsights = async (req, res) => {
     // Optional query parameters for filtering
     const { startDate, endDate, category } = req.query;
 
-    // Build query
-    const query = { user: userId };
+    // Build query with soft-delete filter
+    const query = { user: userId, deletedAt: null };
 
     // Add date filtering if provided
     if (startDate || endDate) {
@@ -24,7 +24,7 @@ exports.getAIInsights = async (req, res) => {
       query.category = category;
     }
 
-    // Get expenses for analysis
+    // Get non-deleted expenses for analysis
     const expenses = await Expense.find(query).sort({ date: -1 });
 
     if (expenses.length === 0) {
@@ -71,6 +71,6 @@ exports.getAIInsights = async (req, res) => {
 
   } catch (error) {
     console.error("Error getting AI insights:", error);
-    res.status(500).json({ message: error.message || "Failed to generate AI insights" });
+    res.status(500).json({ message: "Failed to generate AI insights. Please try again later." });
   }
 };

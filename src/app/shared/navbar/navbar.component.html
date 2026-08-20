@@ -22,6 +22,10 @@
                     Users
                 </a>
                 }
+                <a routerLink="expenses" routerLinkActive="text-blue-600"
+                    class="px-3 py-2 text-gray-700 dark:text-gray-300 hover:text-blue-600 transition-colors">
+                    Expenses
+                </a>
                 <a routerLink="insights" routerLinkActive="text-blue-600"
                     class="px-3 py-2 text-gray-700 dark:text-gray-300 hover:text-blue-600 transition-colors">
                     Insights
@@ -69,6 +73,11 @@
                 Users
             </a>
             }
+            <a routerLink="expenses" routerLinkActive="bg-blue-50 text-blue-600"
+                class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 dark:text-gray-300 hover:bg-blue-50 hover:text-blue-600"
+                (click)="closeMobileMenu()">
+                Expenses
+            </a>
             <a routerLink="insights" routerLinkActive="bg-blue-50 text-blue-600"
                 class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 dark:text-gray-300 hover:bg-blue-50 hover:text-blue-600"
                 (click)="closeMobileMenu()">

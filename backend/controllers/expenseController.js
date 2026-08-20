@@ -1,18 +1,26 @@
+const mongoose = require('mongoose');
 const Expense = require('../models/expense');
 const { parseNaturalLanguageExpense } = require('../services/geminiService');
 
 exports.addExpense = async (req, res) => {
     const { description, amount, category, date } = req.body;
+    if (!description || amount === undefined || !category) {
+        return res.status(400).json({ message: 'Description, amount, and category are required' });
+    }
+    const numAmount = Number(amount);
+    if (isNaN(numAmount) || numAmount <= 0) {
+        return res.status(400).json({ message: 'Amount must be a positive number' });
+    }
     try {
         const expense = new Expense({
             user: req.user.id,
-            description,
-            amount,
-            date,
+            description: String(description).trim(),
+            amount: numAmount,
+            date: date ? new Date(date) : new Date(),
             category,
         });
         await expense.save();
-        res.json(expense);
+        res.status(201).json(expense);
     } catch (err) {
         res.status(500).json({ message: 'Server error' });
     }
@@ -65,12 +73,21 @@ exports.getExpenses = async (req, res) => {
         const pageSize = Math.min(100, Math.max(1, parseInt(limit) || 20));
         const skip     = (pageNum - 1) * pageSize;
 
-        const [expenses, totalCount] = await Promise.all([
+        const aggFilter = {
+            ...filter,
+            user: mongoose.Types.ObjectId.isValid(req.user.id) ? new mongoose.Types.ObjectId(req.user.id) : req.user.id
+        };
+
+        const [expenses, totalCount, totalAggregate] = await Promise.all([
             Expense.find(filter).sort({ date: -1 }).skip(skip).limit(pageSize),
             Expense.countDocuments(filter),
+            Expense.aggregate([
+                { $match: aggFilter },
+                { $group: { _id: null, total: { $sum: '$amount' } } }
+            ])
         ]);
 
-        const totalAmount = expenses.reduce((acc, e) => acc + e.amount, 0);
+        const totalAmount = totalAggregate.length > 0 ? totalAggregate[0].total : 0;
 
         res.json({
             totalAmount,
@@ -90,7 +107,7 @@ exports.getExpenses = async (req, res) => {
 exports.getExpense = async (req, res) => {
     const { id } = req.params;
     try {
-        const expense = await Expense.findById(id);
+        const expense = await Expense.findOne({ _id: id, user: req.user.id, deletedAt: null });
         if (!expense) {
             return res.status(404).json({ message: 'Expense not found' });
         }
@@ -103,12 +120,27 @@ exports.getExpense = async (req, res) => {
 exports.updateExpense = async (req, res) => {
     const { id } = req.params;
     const { description, amount, date, category } = req.body;
+    if (amount !== undefined) {
+        const numAmount = Number(amount);
+        if (isNaN(numAmount) || numAmount <= 0) {
+            return res.status(400).json({ message: 'Amount must be a positive number' });
+        }
+    }
     try {
-        const expense = await Expense.findByIdAndUpdate(
-            id,
-            { description, amount, date, category },
-            { new: true }
+        const updateData = {};
+        if (description !== undefined) updateData.description = String(description).trim();
+        if (amount !== undefined) updateData.amount = Number(amount);
+        if (date !== undefined) updateData.date = new Date(date);
+        if (category !== undefined) updateData.category = category;
+
+        const expense = await Expense.findOneAndUpdate(
+            { _id: id, user: req.user.id, deletedAt: null },
+            updateData,
+            { new: true, runValidators: true }
         );
+        if (!expense) {
+            return res.status(404).json({ message: 'Expense not found' });
+        }
         res.json(expense);
     } catch (err) {
         res.status(500).json({ message: 'Server error' });
@@ -118,7 +150,14 @@ exports.updateExpense = async (req, res) => {
 exports.deleteExpense = async (req, res) => {
     const { id } = req.params;
     try {
-        await Expense.findByIdAndUpdate(id, { deletedAt: new Date() });
+        const expense = await Expense.findOneAndUpdate(
+            { _id: id, user: req.user.id, deletedAt: null },
+            { deletedAt: new Date() },
+            { new: true }
+        );
+        if (!expense) {
+            return res.status(404).json({ message: 'Expense not found' });
+        }
         res.json({ message: 'Expense removed' });
     } catch (err) {
         res.status(500).json({ message: 'Server error' });
@@ -130,10 +169,19 @@ exports.exportExpensesCSV = async (req, res) => {
         const filter = { user: req.user.id, deletedAt: null };
         const expenses = await Expense.find(filter).sort({ date: -1 });
 
+        const sanitizeCSV = (str) => {
+            if (str === null || str === undefined) return '';
+            let val = String(str).replace(/"/g, '""');
+            if (/^[=+\-@\t\r]/.test(val)) {
+                val = `'` + val;
+            }
+            return `"${val}"`;
+        };
+
         const header = 'Date,Description,Category,Amount\n';
         const rows = expenses.map(e => {
             const dateStr = e.date ? new Date(e.date).toISOString().split('T')[0] : '';
-            return `"${dateStr}","${e.description}","${e.category}",${e.amount}`;
+            return `${sanitizeCSV(dateStr)},${sanitizeCSV(e.description)},${sanitizeCSV(e.category)},${Number(e.amount) || 0}`;
         }).join('\n');
 
         const csvData = header + rows;
