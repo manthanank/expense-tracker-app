@@ -1,6 +1,12 @@
 Expense Tracker App
 ===================
 
+Track personal expenses, filter them by date and category, and get spending insights from Google Gemini.
+
+**Live demo:** [expense-tracker-app-manthanank.vercel.app](https://expense-tracker-app-manthanank.vercel.app)
+
+![Expense Tracker App screenshot](docs/screenshot.png)
+
 This is a full-stack expense tracker application built with a **Node.js + Express** backend and an **Angular** frontend. It allows users to sign up, log in, add, edit, delete, and filter expenses by date and category. The app also includes **AI-powered financial insights** using Google's Gemini API.
 
 Table of Contents
@@ -9,6 +15,7 @@ Table of Contents
 - [Features](#features)
 - [Technologies Used](#technologies-used)
 - [Project Structure](#project-structure)
+- [Run locally](#run-locally)
 - [Prerequisites](#prerequisites)
 - [Installation](#installation)
 - [Running the Application](#running-the-application)
@@ -86,10 +93,29 @@ Key frontend areas:
 - `src/app/expenses` – add, edit, list expenses
 - `src/app/core` – services, guards, interceptors, models
 
+Run locally
+-----------
+
+```sh
+git clone https://github.com/manthanank/expense-tracker-app.git
+cd expense-tracker-app
+
+# backend (needs backend/.env, see Installation below)
+cd backend
+npm install
+npm start          # http://localhost:5000
+
+# frontend, in a second terminal from the repo root
+npm ci
+npm start          # http://localhost:4200
+```
+
+`npm run build` writes the production frontend build to `dist/`.
+
 Prerequisites
 -------------
 
-- Node.js (v16.x or later recommended)
+- Node.js 20 or later (CI uses Node 22)
 - Angular CLI (v19.x or later)
 - MongoDB (local instance or cloud, e.g. MongoDB Atlas)
 - Google Gemini API key
@@ -139,13 +165,7 @@ Installation
 
 3. **Frontend setup**
 
-   From the project root:
-
-   ```sh
-   cd expense-tracker-app
-   ```
-
-   Install frontend dependencies:
+   From the project root, install frontend dependencies:
 
    ```sh
    npm install
